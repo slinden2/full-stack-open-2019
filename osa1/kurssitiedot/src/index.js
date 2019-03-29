@@ -1,66 +1,61 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-const Header = (props) => {
-  return (
-    <>
-      <h1>{props.course}</h1>
-    </>
-  )
-}
+const Header = (props) => <h1>{props.course.name}</h1>
 
 const Content = (props) => {
   return (
     <>
-      <Part courseData={props.courseData[0]} />
-      <Part courseData={props.courseData[1]} />
-      <Part courseData={props.courseData[2]} />
+      <Part course={props.course.parts[0]} />
+      <Part course={props.course.parts[1]} />
+      <Part course={props.course.parts[2]} />
     </>
   )
 }
 
 const Part = (props) => {
   return (
-    <>
       <p>
-        {props.courseData.name} {props.courseData.excercises}
+        {props.course.name} {props.course.excercises}
       </p>
-    </>
   )
 }
 
 const Total = (props) => {
   return (
-    <>
-      <p>yhteensä {props.courseData[0].excercises + 
-                   props.courseData[1].excercises + 
-                   props.courseData[2].excercises} tehtävää</p>
-    </>
+    <p>
+      yhteensä {props.course.parts[0].excercises + 
+                props.course.parts[1].excercises + 
+                props.course.parts[2].excercises} tehtävää
+    </p>
   )
 }
 
 const App = () => {
-  const course = 'Half Stack -sovelluskehitys'
-  const courseData = [
-    {
-      name: 'Reactin perusteet',
-      excercises: 10
-    },
-    {
-      name: 'Tiedonvälitys propseilla',
-      excercises: 7
-    },
-    {
-      name: 'Komponenttien tila',
-      excercises: 14
-    }
-  ]
+
+  const course = {
+    name: 'Half Stack -sovelluskehitys',
+    parts: [
+      {
+        name: 'Reactin perusteet',
+        excercises: 10
+      },
+      {
+        name: 'Tiedonvälitys propseilla',
+        excercises: 7
+      },
+      {
+        name: 'Komponenttien tila',
+        excercises: 14
+      }
+    ]
+  }
 
   return (
     <>
       <Header course={course} />
-      <Content courseData={courseData}  />
-      <Total courseData={courseData} />
+      <Content course={course} />
+      <Total course={course} />
     </>
   )
 }
