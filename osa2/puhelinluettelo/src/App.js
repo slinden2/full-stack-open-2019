@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const Person = ({ person: { name, number } }) => <li>{name} {number}</li>
 
@@ -33,16 +34,22 @@ const InputField = (props) => {
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-1234567' },
-    { name: 'Martti Tienari', number: '040-1234567' },
-    { name: 'Arto Järvinen', number: '040-1234567' },
-    { name: 'Lea Kutvonen', number: '040-1234567' }
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
+
+  const hook = () => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+        setFilteredPersons(response.data)
+      })
+  }
+
+  useEffect(hook, [])
 
   const constainsObject = (array, objA) => {
     for (const objB of array) {
