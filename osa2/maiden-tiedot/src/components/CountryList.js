@@ -11,19 +11,19 @@ const CountryList = ({ countries, filter, handleFilter }) => {
     return (
       countries
         .map(country =>
-          <>
-            <span key={country.alpha3Code}>
+          <div key={country.alpha3Code}>
+            <span>
               {country.name}{" "}
               <button onClick={() => handleFilter(country.name)}>show</button>
             </span><br />
-          </>)
+          </div>)
     )
   }
 
   return (
-    <p>
+    <div>
       {countryItems()}
-    </p>
+    </div>
   )
 }
 
