@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import InputField from './components/InputField'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 const App = () => {
@@ -10,13 +11,11 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [shownPersons, setShownPersons] = useState(persons)
+  const [notification, setNotification] = useState(null)
+  const [error, setError] = useState(false)
+  const [timeoutId, setTimeoutId] = useState(0)
 
-  const updateList = persons => {
-    setPersons(persons)
-    setShownPersons(persons)
-    setFilter("")
-  }
-
+  // Haetaan tiedot palvelimelta ja päivitetään persons-taulukko
   const hook = () => {
     personService
       .getAll()
@@ -24,9 +23,17 @@ const App = () => {
         updateList(persons)
       })
   }
-
   useEffect(hook, [])
 
+  // Apufunktio hookkien päivittämiseen
+  const updateList = persons => {
+    setPersons(persons)
+    setShownPersons(persons)
+    setFilter("")
+  }
+
+  // Nimien vertailufunktio. Palauttaa taulukosta löytyneen
+  // kontaktin id:n. Tätä tarvitaan kontakin päivittämiseen.
   const containsObject = (array, objA) => {
     for (const objB of array) {
       if (objB.name === objA.name) return objB.id
@@ -34,6 +41,27 @@ const App = () => {
     return false
   }
 
+  // Funktio notifikaatioiden hallintaan.
+  // Jos toiminta päätyy virheeseen, niin 
+  // error-hookin avulla saadaan erilainen 
+  // notifikaatioväritys.
+  const notify = (message, error) => {
+    clearTimeout(timeoutId)
+    if (error) {
+      setError(true)
+    } else {
+      setError(false)
+    }
+
+    setNotification(message)
+    setTimeoutId(setTimeout(() => {
+      setError(false)
+      setNotification(null)
+    }, 5000))
+  }
+
+  // Funktio henkilöiden lisämiseen. Jos henkilö
+  // on jo olemassa, niin kutsutaan updatePerson-funktiota
   const addPerson = event => {
     event.preventDefault()
     const newPerson = {
@@ -42,32 +70,43 @@ const App = () => {
     }
 
     const existingId = containsObject(persons, newPerson)
-
     if (existingId) {
       if (window.confirm(`${newPerson.name} on jo luettelossa. Korvataanko vanha numero uudella?`)) {
-        personService
-          .update(existingId, newPerson)
-          .then(modifiedPerson => {
-            const newPersons = persons.map(
-              person =>
-                person.name === modifiedPerson.name
-                  ? modifiedPerson
-                  : person
-            )
-            updateList(newPersons)
-          })
+        updatePerson(existingId, newPerson)
       }
     } else {
       personService
         .add(newPerson)
         .then(addedPerson => {
           updateList(persons.concat(addedPerson))
+          notify(`Lisättiin ${addedPerson.name}`)
         })
     }
     setNewName("")
     setNewNumber("")
   }
 
+  // Funktio henkilön päivittämiseen
+  const updatePerson = (existingId, newPerson) => {
+    personService
+      .update(existingId, newPerson)
+      .then(modifiedPerson => {
+        const newPersons = persons.map(
+          person =>
+            person.name === modifiedPerson.name
+              ? modifiedPerson
+              : person
+        )
+        updateList(newPersons)
+        notify(`Henkilön ${newPerson.name} numeroa muutettiin`)
+      })
+      .catch(error => {
+        notify(`Henkilö ${newPerson.name} oli jo poistettu`, error)
+        updateList(persons.filter(person => person.id !== existingId))
+      })
+  }
+
+  // Apufuktiot kenttien tietojen tallentamiseen
   const handleNameChange = ({ target: { value } }) => setNewName(value)
   const handleNumberChange = ({ target: { value } }) => setNewNumber(value)
 
@@ -87,6 +126,10 @@ const App = () => {
   return (
     <>
       <h1>Puhelinluettelo</h1>
+      <Notification
+        message={notification}
+        error={error}
+      />
       <InputField
         text="rajaa näytettäviä"
         onChange={handleFilterChange}
@@ -101,7 +144,12 @@ const App = () => {
         numberValue={newNumber}
       />
       <h2>Numerot</h2>
-      <Persons persons={persons} shownPersons={shownPersons} updateList={updateList} />
+      <Persons
+        persons={persons}
+        shownPersons={shownPersons}
+        updateList={updateList}
+        notify={notify}
+      />
     </>
   )
 
