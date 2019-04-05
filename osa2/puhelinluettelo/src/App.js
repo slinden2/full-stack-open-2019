@@ -1,59 +1,35 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-
-const Person = ({ person: { name, number } }) => <li>{name} {number}</li>
-
-const Persons = ({ persons }) => {
-  return (
-    <ul>
-      {persons.map(person => <Person key={person.name} person={person} />)}
-    </ul>
-  )
-}
-
-const PersonForm = props => {
-  return (
-    <form onSubmit={props.onSubmit}>
-      <div>
-        <InputField text="nimi" onChange={props.onNameChange} value={props.nameValue} />
-        <InputField text="numero" onChange={props.onNumberChange} value={props.numberValue} />
-      </div>
-      <div>
-        <button type="submit">lisää</button>
-      </div>
-    </form>
-  )
-}
-
-const InputField = (props) => {
-  return (
-    <div>
-      {props.text}: <input onChange={props.onChange} value={props.value} />
-    </div>
-  )
-}
+import InputField from './components/InputField'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-  const [filteredPersons, setFilteredPersons] = useState(persons)
+  const [shownPersons, setShownPersons] = useState(persons)
+
+  const updateList = persons => {
+    setPersons(persons)
+    setShownPersons(persons)
+    setFilter("")
+  }
 
   const hook = () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-        setFilteredPersons(response.data)
+    personService
+      .getAll()
+      .then(persons => {
+        updateList(persons)
       })
   }
 
   useEffect(hook, [])
 
-  const constainsObject = (array, objA) => {
+  const containsObject = (array, objA) => {
     for (const objB of array) {
-      if (objB.name === objA.name) return true
+      if (objB.name === objA.name) return objB.id
     }
     return false
   }
@@ -65,14 +41,29 @@ const App = () => {
       number: newNumber
     }
 
-    if (constainsObject(persons, newPerson)) {
-      alert(`${newPerson.name} on jo luettelossa`)
-    } else {
-      setPersons(persons.concat(newPerson))
-      setFilteredPersons(persons.concat(newPerson))
-      setFilter("")
-    }
+    const existingId = containsObject(persons, newPerson)
 
+    if (existingId) {
+      if (window.confirm(`${newPerson.name} on jo luettelossa. Korvataanko vanha numero uudella?`)) {
+        personService
+          .update(existingId, newPerson)
+          .then(modifiedPerson => {
+            const newPersons = persons.map(
+              person =>
+                person.name === modifiedPerson.name
+                  ? modifiedPerson
+                  : person
+            )
+            updateList(newPersons)
+          })
+      }
+    } else {
+      personService
+        .add(newPerson)
+        .then(addedPerson => {
+          updateList(persons.concat(addedPerson))
+        })
+    }
     setNewName("")
     setNewNumber("")
   }
@@ -82,10 +73,11 @@ const App = () => {
 
   const handleFilterChange = ({ target: { value } }) => {
     setFilter(value)
+
     if (!value) {
-      setFilteredPersons(persons)
+      setShownPersons(persons)
     } else {
-      setFilteredPersons(
+      setShownPersons(
         persons.filter(person =>
           person.name.toLowerCase().startsWith(value.toLowerCase()))
       )
@@ -95,7 +87,11 @@ const App = () => {
   return (
     <>
       <h1>Puhelinluettelo</h1>
-      <InputField text="rajaa näytettäviä" onChange={handleFilterChange} value={filter} />
+      <InputField
+        text="rajaa näytettäviä"
+        onChange={handleFilterChange}
+        value={filter}
+      />
       <h2>Lisää uusi</h2>
       <PersonForm
         onSubmit={addPerson}
@@ -105,7 +101,7 @@ const App = () => {
         numberValue={newNumber}
       />
       <h2>Numerot</h2>
-      <Persons persons={filteredPersons} />
+      <Persons persons={persons} shownPersons={shownPersons} updateList={updateList} />
     </>
   )
 
