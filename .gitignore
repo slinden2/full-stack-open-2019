@@ -1,3 +1,6 @@
 node_modules/
 materiaali/
+notes-app/
 .env
+build/
+requests/
