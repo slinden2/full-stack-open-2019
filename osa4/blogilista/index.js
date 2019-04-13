@@ -3,50 +3,8 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const Blog = require('./models/blog')
 const mongoose = require('mongoose')
-const uniqueValidator = require('mongoose-unique-validator')
-
-mongoose.set('useCreateIndex', true)
-
-const urlValidator = (url) => {
-  const urlRegexp = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
-  return urlRegexp.test(url)
-}
-
-const blogSchema = mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-    minlength: 3,
-    unique: true
-  },
-  author:  {
-    type: String,
-    required: true,
-    minlength: 3
-  },
-  url: {
-    type: String,
-    required: true,
-    validate: {
-      validator: (url) => urlValidator(url),
-      message: props => `${props.value} is not a valid url!`
-    }
-  },
-  likes: Number
-})
-
-blogSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id
-    delete returnedObject._id
-    delete returnedObject.__v
-  }
-})
-
-blogSchema.plugin(uniqueValidator)
-
-const Blog = mongoose.model('Blog', blogSchema)
 
 const mongoUrl = process.env.MONGODB_URI
 mongoose.connect(mongoUrl, { useNewUrlParser: true })
