@@ -36,3 +36,20 @@ describe('most likes', () => {
 
   })
 })
+
+describe.only('most blogs', () => {
+
+  test('when list has only one blog, return the author of that blog with number of blogs set to 1 in an object', () => {
+    expect(listHelper.mostBlogs(testData.listWithOneBlog)).toEqual({
+      author: 'Michael Chan',
+      blogs: 1
+    })
+  })
+
+  test('when list has many blogs, return the author and number of blogs of the author with most blogs in an object', () => {
+    expect(listHelper.mostBlogs(testData.listWithManyBlogs)).toEqual({
+      author: 'Robert C. Martin',
+      blogs: 3
+    })
+  })
+})

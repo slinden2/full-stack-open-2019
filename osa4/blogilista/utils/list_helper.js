@@ -1,3 +1,5 @@
+const blogs = require('../tests/test_data').listWithManyBlogs
+
 const dummy = (blogs) => {
   return 1
 }
@@ -28,8 +30,29 @@ const favoriteBlog = (blogs) => {
   })
 }
 
+const mostBlogs = (blogs) => {
+  let authors = []
+  blogs.forEach(blog => {
+    if (!authors.some(b => b.author === blog.author)) {
+      // Alustetaan kirjoittaja taulukkoon, jos sitä ei vielä ole siellä
+      authors = authors.concat({ 'author': blog.author, 'blogs': 1 })
+    } else {
+      // Lisätään kirjoittajalle blogi
+      authors.find(b => b.author === blog.author).blogs += 1
+    }
+  })
+
+  // Palautetaan kirjoittaja, jolla on eniten blogeja
+  return authors.reduce((mostBlogs, blog) =>
+    mostBlogs.blogs < blog.blogs
+      ? blog
+      : mostBlogs
+  )
+}
+
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlog
+  favoriteBlog,
+  mostBlogs
 }
