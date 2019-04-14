@@ -1,5 +1,3 @@
-const blogs = require('../tests/test_data').listWithManyBlogs
-
 const dummy = (blogs) => {
   return 1
 }
