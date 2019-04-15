@@ -76,6 +76,20 @@ test('when title and url properties are not defined, the server responds with st
     .expect(400)
 })
 
+test('deleting single blog by id works', async () => {
+  const allBlogsAtStart = await helper.blogsInDb()
+  const blogId = allBlogsAtStart[0].id
+
+  await api
+    .delete(`/api/blogs/${blogId}`)
+    .expect(204)
+
+  const allBlogsAtEnd = await helper.blogsInDb()
+
+  expect(allBlogsAtEnd.length).toBe(allBlogsAtStart.length - 1)
+})
+
+
 afterAll(() => {
   mongoose.connection.close()
 })
