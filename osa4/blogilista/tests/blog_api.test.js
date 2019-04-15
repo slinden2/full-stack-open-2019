@@ -34,7 +34,7 @@ test('number of blogs increases after valid POST request', async () => {
     title: 'Testiblogi 1',
     author: 'Tatu Testaaja',
     url: 'http://www.testisaitti.fi',
-    likes: '1'
+    likes: 1
   }
 
   await api
@@ -48,6 +48,32 @@ test('number of blogs increases after valid POST request', async () => {
 
   const titles = newBlogs.map(blog => blog.title)
   expect(titles).toContain(newBlog.title)
+})
+
+test('when no value is specified, the like property defaults to 0', async () => {
+  const newBlog = {
+    title: 'Testiblogi 2',
+    author: 'Tatu Testaaja',
+    url: 'http://www.testisaitti.fi'
+  }
+
+  const addedBlog = await api
+    .post('/api/blogs')
+    .send(newBlog)
+
+  expect(addedBlog.body.likes).toBe(0)
+})
+
+test('when title and url properties are not defined, the server responds with status code 400 Bad request', async () => {
+  const newBlog = {
+    author: 'Tatu Testaaja',
+    likes: 1
+  }
+
+  await api
+    .post('/api/blogs/')
+    .send(newBlog)
+    .expect(400)
 })
 
 afterAll(() => {
