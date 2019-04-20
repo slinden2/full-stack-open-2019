@@ -17,6 +17,27 @@ describe('when there is one initial user in db', () => {
     await newUser.save()
   })
 
+  test('a username can be saved only once in db', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const invalidUser = {
+      username: 'root',
+      name: 'superuser',
+      password: 'salainen'
+    }
+
+    const response = await api
+      .post('/api/users')
+      .send(invalidUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.error).toContain('`username` to be unique')
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd.length).toBe(usersAtStart.length)
+  })
+
   test('user creation works with correct status code', async () => {
     const usersAtStart = await helper.usersInDb()
 
@@ -37,8 +58,8 @@ describe('when there is one initial user in db', () => {
     expect(usersAtEnd.map(user => user.username)).toContain(savedUser.body.username)
   })
 
-  test.only('invalid passwords get rejected with correct status code', async () => {
-    const usersAtStart = await helper.usersInDb() 
+  test('invalid passwords get rejected with correct status code', async () => {
+    const usersAtStart = await helper.usersInDb()
 
     const invalidUser = {
       username: 'tester',

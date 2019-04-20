@@ -67,7 +67,7 @@ describe('adding blogs', () => {
     expect(addedBlog.body.likes).toBe(0)
   })
 
-  test('when title and url properties are not defined, the server responds with status code 400 Bad request', async () => {
+  test.only('when title and url properties are not defined, the server responds with status code 400 Bad request', async () => {
     const newBlog = {
       author: 'Tatu Testaaja',
       likes: 1
