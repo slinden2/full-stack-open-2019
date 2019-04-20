@@ -17,14 +17,14 @@ const getTokenFrom = request => {
 }
 
 blogsRouter.post('/', async (request, response, next) => {
-  const token = getTokenFrom(request)
+  const { body, token } = request
 
   try {
     const userFromToken = jwt.verify(token, process.env.SECRET)
 
     const user = await User.findOne({ username: userFromToken.username })
 
-    const blog = new Blog({ ...request.body, user: user._id })
+    const blog = new Blog({ ...body, user: user._id })
 
     blog.likes = blog.likes || 0
 
