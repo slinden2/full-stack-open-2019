@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
@@ -11,10 +12,18 @@ blogsRouter.get('/', async (request, response, next) => {
   }
 })
 
+const getTokenFrom = request => {
+  return request.get('Authorization').substring(7)
+}
+
 blogsRouter.post('/', async (request, response, next) => {
+  const token = getTokenFrom(request)
+
   try {
-    const users = await User.find({})
-    const user = users[1]
+    const userFromToken = jwt.verify(token, process.env.SECRET)
+
+    const user = await User.findOne({ username: userFromToken.username })
+
     const blog = new Blog({ ...request.body, user: user._id })
 
     blog.likes = blog.likes || 0
