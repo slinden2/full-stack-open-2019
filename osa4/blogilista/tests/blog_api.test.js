@@ -1,6 +1,8 @@
 const supertest = require('supertest')
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 const app = require('../app')
 
@@ -8,8 +10,15 @@ const api = supertest(app)
 
 beforeAll(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
 
-  const initialBlogs = helper.listWithManyBlogs.map(blog => new Blog(blog))
+  const userObjects = helper.initialUsers.map(user => new User(user))
+  const userArray = userObjects.map(user => user.save())
+  await Promise.all(userArray)
+
+  const user = await User.findOne({ username: 'test1' })
+
+  const initialBlogs = helper.listWithManyBlogs.map(blog => new Blog({ ...blog, user: user._id }))
   const promiseArray = initialBlogs.map(blog => blog.save())
   await Promise.all(promiseArray)
 })
@@ -33,6 +42,15 @@ describe('retrieving blogs', () => {
 
 describe('adding blogs', () => {
   test('number of blogs increases after valid POST request', async () => {
+    const user = await User.findOne({ username: 'test1' })
+
+    const userForToken = {
+      username: user.username,
+      id: user._id
+    }
+
+    const token = jwt.sign(userForToken, process.env.SECRET)
+
     const newBlog = {
       title: 'Testiblogi 1',
       author: 'Tatu Testaaja',
@@ -42,6 +60,7 @@ describe('adding blogs', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -54,6 +73,15 @@ describe('adding blogs', () => {
   })
 
   test('when no value is specified, the like property defaults to 0', async () => {
+    const user = await User.findOne({ username: 'test1' })
+
+    const userForToken = {
+      username: user.username,
+      id: user._id
+    }
+
+    const token = jwt.sign(userForToken, process.env.SECRET)
+
     const newBlog = {
       title: 'Testiblogi 2',
       author: 'Tatu Testaaja',
@@ -62,12 +90,22 @@ describe('adding blogs', () => {
 
     const addedBlog = await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
 
     expect(addedBlog.body.likes).toBe(0)
   })
 
-  test.only('when title and url properties are not defined, the server responds with status code 400 Bad request', async () => {
+  test('when title and url properties are not defined, the server responds with status code 400 Bad request', async () => {
+    const user = await User.findOne({ username: 'test1' })
+
+    const userForToken = {
+      username: user.username,
+      id: user._id
+    }
+
+    const token = jwt.sign(userForToken, process.env.SECRET)
+
     const newBlog = {
       author: 'Tatu Testaaja',
       likes: 1
@@ -75,6 +113,7 @@ describe('adding blogs', () => {
 
     await api
       .post('/api/blogs/')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(400)
   })
@@ -82,11 +121,21 @@ describe('adding blogs', () => {
 
 describe('deleting blogs', () => {
   test('deleting single blog by id works', async () => {
+    const user = await User.findOne({ username: 'test1' })
+
+    const userForToken = {
+      username: user.username,
+      id: user._id
+    }
+
+    const token = jwt.sign(userForToken, process.env.SECRET)
+
     const allBlogsAtStart = await helper.blogsInDb()
     const blogId = allBlogsAtStart[0].id
 
     await api
       .delete(`/api/blogs/${blogId}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204)
 
     const allBlogsAtEnd = await helper.blogsInDb()

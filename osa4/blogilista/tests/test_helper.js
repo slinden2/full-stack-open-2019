@@ -63,6 +63,19 @@ const listWithManyBlogs = [
   }
 ]
 
+const initialUsers = [
+  {
+    username: 'root',
+    name: 'superuser',
+    passwordHash: 'salainen'
+  },
+  {
+    username: 'test1',
+    name: 'test user1',
+    passwordHash: 'salainen'
+  }
+]
+
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
   return blogs.map(blog => blog.toJSON())
@@ -77,5 +90,6 @@ module.exports = {
   listWithOneBlog,
   listWithManyBlogs,
   blogsInDb,
-  usersInDb
+  usersInDb,
+  initialUsers
 }

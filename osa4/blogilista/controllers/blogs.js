@@ -12,18 +12,13 @@ blogsRouter.get('/', async (request, response, next) => {
   }
 })
 
-const getTokenFrom = request => {
-  return request.get('Authorization').substring(7)
-}
-
 blogsRouter.post('/', async (request, response, next) => {
   const { body, token } = request
 
   try {
     const userFromToken = jwt.verify(token, process.env.SECRET)
 
-    const user = await User.findOne({ username: userFromToken.username })
-
+    const user = await User.findById(userFromToken.id)
     const blog = new Blog({ ...body, user: user._id })
 
     blog.likes = blog.likes || 0
@@ -50,8 +45,18 @@ blogsRouter.put('/:id', async (request, response, next) => {
 
 blogsRouter.delete('/:id', async (request, response, next) => {
   try {
-    await Blog.findByIdAndDelete(request.params.id)
-    response.status(204).end()
+    const userFromToken = jwt.verify(request.token, process.env.SECRET)
+    const userId = userFromToken.id
+    const blog = await Blog.findById(request.params.id)
+
+    if (!blog) return response.status(204).end()
+
+    if (userId === blog.user.toString()) {
+      await Blog.findByIdAndDelete(request.params.id)
+      response.status(204).end()
+    } else {
+      response.status(401).end()
+    }
   } catch (exception) {
     next(exception)
   }
