@@ -4,3 +4,4 @@ notes-app/
 .env
 build/
 requests/
+backend_backup/
