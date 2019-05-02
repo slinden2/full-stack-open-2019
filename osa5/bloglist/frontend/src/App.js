@@ -80,7 +80,14 @@ const App = () => {
 
   const blogRows = () => {
     const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
-    return sortedBlogs.map(blog => <Blog key={blog.id} blog={blog} />)
+    return sortedBlogs.map(blog =>
+      <Blog
+        key={blog.id}
+        blog={blog}
+        blogs={blogs}
+        notify={notify}
+        setBlogs={setBlogs}
+      />)
   }
 
   if (user === null) {
@@ -120,9 +127,6 @@ const App = () => {
       <p>{user.username} logged in</p>
       <button onClick={() => handleLogout()}>logout</button>
       {blogForm()}
-      {/* {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )} */}
       {blogRows()}
     </div>
   )
