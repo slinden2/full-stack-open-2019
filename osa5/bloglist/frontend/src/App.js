@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -28,7 +29,7 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-  
+
   const notify = (message, error) => {
     if (timeoutId) clearTimeout(timeoutId)
     setNotification({ message, error })
@@ -63,6 +64,19 @@ const App = () => {
     notify(`${user.username} successfully logged out`, false)
     setUser(null)
   }
+
+  const blogFormRef = React.createRef()
+
+  const blogForm = () => (
+    <Togglable buttonLabel='add blog' ref={blogFormRef}>
+      <BlogForm
+        blogs={blogs}
+        setBlogs={setBlogs}
+        notify={notify}
+        blogFormRef={blogFormRef}
+      />
+    </Togglable>
+  )
 
   if (user === null) {
     return (
@@ -99,12 +113,8 @@ const App = () => {
       <h2>blogs</h2>
       <Notification notification={notification} />
       <p>{user.username} logged in</p>
-      <button onClick={() => handleLogout()}>Logout</button>
-      <BlogForm 
-        blogs={blogs}
-        setBlogs={setBlogs} 
-        notify={notify} 
-      />
+      <button onClick={() => handleLogout()}>logout</button>
+      {blogForm()}
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}

@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const BlogForm = ({ blogs, setBlogs, notify }) => {
+const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
   const [title, setTitle] = useState("")
   const [author, setAuthor] = useState("")
   const [url, setUrl] = useState("")
 
   const handleBlogCreation = async event => {
     event.preventDefault()
+    blogFormRef.current.toggleVisibility()
 
     let blogObject = {}
     for (const input of event.target.querySelectorAll('input')) {
@@ -20,7 +21,7 @@ const BlogForm = ({ blogs, setBlogs, notify }) => {
       setTitle("")
       setAuthor("")
       setUrl("")
-      notify(`a new blog ${blog.title} successfully added`)   
+      notify(`a new blog ${blog.title} successfully added`)
     } catch (exception) {
       notify(`${exception.response.data.error}`, true)
     }
@@ -32,16 +33,16 @@ const BlogForm = ({ blogs, setBlogs, notify }) => {
       <form onSubmit={event => handleBlogCreation(event)}>
         <div>
           title:
-          <input 
+          <input
             type="text"
             name="title"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
-          />  
+          />
         </div>
         <div>
           author:
-          <input 
+          <input
             type="text"
             name="author"
             value={author}
@@ -50,7 +51,7 @@ const BlogForm = ({ blogs, setBlogs, notify }) => {
         </div>
         <div>
           url:
-          <input 
+          <input
             type="text"
             name="url"
             value={url}
