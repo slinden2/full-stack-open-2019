@@ -83,6 +83,7 @@ const App = () => {
     return sortedBlogs.map(blog =>
       <Blog
         key={blog.id}
+        user={user}
         blog={blog}
         blogs={blogs}
         notify={notify}

@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, blogs, setBlogs, notify }) => {
+const Blog = ({ user, blog, blogs, setBlogs, notify }) => {
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
+
+  let showRemove = false
+  if (user.username === blog.user.username) showRemove = true
 
   const blogStyle = {
     paddingTop: 10,
@@ -13,7 +16,9 @@ const Blog = ({ blog, blogs, setBlogs, notify }) => {
     marginBottom: 5
   }
 
-  const toggleDetails = { display: visible ? '' : 'none' }
+  const toggle = show => {
+    return { display: show ? '' : 'none' }
+  }
 
   const updateLikes = async () => {
     const newBlog = { ...blog, likes: likes + 1 }
@@ -37,12 +42,12 @@ const Blog = ({ blog, blogs, setBlogs, notify }) => {
       <div onClick={() => setVisible(!visible)}>
         {blog.title} {blog.author}
       </div>
-      <div style={toggleDetails}>
+      <div style={toggle(visible)}>
         {blog.url} <br />
         {likes}
         <button onClick={updateLikes}>like</button> <br />
         added by {blog.user.name} <br />
-        <button onClick={removeBlog}>remove</button>
+        <button style={toggle(showRemove)} onClick={removeBlog}>remove</button>
       </div>
     </div>
   )
