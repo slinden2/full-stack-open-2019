@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import blogService from '../services/blogs'
 
 const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
-  const [title, setTitle] = useState("")
-  const [author, setAuthor] = useState("")
-  const [url, setUrl] = useState("")
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   const handleBlogCreation = async event => {
     event.preventDefault()
@@ -17,13 +18,14 @@ const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
     try {
       const blog = await blogService.create(blogObject)
 
-      // Haen lisätyn blogin heti tietokannasta, jotta saan 
+      // Haen lisätyn blogin heti tietokannasta, jotta saan
       // lisääjän tiedot heti käyttöön. blog-muuttujassa on vain
       // lisääjän id.
       const newBlog = await blogService.getById(blog.id)
-      setTitle("")
-      setAuthor("")
-      setUrl("")
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      blogFormRef.current.toggleVisibility()
       setBlogs(blogs.concat(newBlog))
       notify(`a new blog ${newBlog.title} successfully added`)
     } catch (exception) {
@@ -66,6 +68,13 @@ const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
       </form>
     </div>
   )
+}
+
+BlogForm.propTypes = {
+  blogs: PropTypes.array.isRequired,
+  setBlogs: PropTypes.func.isRequired,
+  notify: PropTypes.func.isRequired,
+  blogFormRef: PropTypes.object.isRequired
 }
 
 export default BlogForm

@@ -1,9 +1,10 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import './Notification.css'
 
 const Notification = ({ notification }) => {
-  if (!notification) return ""
-  
+  if (!notification) return ''
+
   const style = notification.error ? 'error' : 'success'
 
   return (
@@ -11,6 +12,10 @@ const Notification = ({ notification }) => {
       {notification.message}
     </div>
   )
+}
+
+Notification.propTypes = {
+  notification: PropTypes.object.isRequired
 }
 
 export default Notification
