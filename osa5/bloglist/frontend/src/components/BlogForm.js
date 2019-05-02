@@ -8,7 +8,6 @@ const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
 
   const handleBlogCreation = async event => {
     event.preventDefault()
-    blogFormRef.current.toggleVisibility()
 
     let blogObject = {}
     for (const input of event.target.querySelectorAll('input')) {
@@ -17,11 +16,16 @@ const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
 
     try {
       const blog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(blog))
+
+      // Haen lisätyn blogin heti tietokannasta, jotta saan 
+      // lisääjän tiedot heti käyttöön. blog-muuttujassa on vain
+      // lisääjän id.
+      const newBlog = await blogService.getById(blog.id)
       setTitle("")
       setAuthor("")
       setUrl("")
-      notify(`a new blog ${blog.title} successfully added`)
+      setBlogs(blogs.concat(newBlog))
+      notify(`a new blog ${newBlog.title} successfully added`)
     } catch (exception) {
       notify(`${exception.response.data.error}`, true)
     }
