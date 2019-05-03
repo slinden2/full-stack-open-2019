@@ -37,7 +37,7 @@ const Blog = ({ user, blog, blogs, setBlogs, notify }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blogitem'>
       <div onClick={() => setVisible(!visible)} className='title'>
         {blog.title} {blog.author}
       </div>

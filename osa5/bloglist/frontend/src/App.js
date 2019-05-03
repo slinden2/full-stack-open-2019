@@ -96,7 +96,7 @@ const App = () => {
       <div>
         <h2>Log in to application</h2>
         <Notification notification={notification} />
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} className='loginform'>
           <div>
             username
             <input
@@ -126,7 +126,7 @@ const App = () => {
       <h2>blogs</h2>
       <Notification notification={notification} />
       <p>{user.username} logged in</p>
-      <button onClick={() => handleLogout()}>logout</button>
+      <button onClick={handleLogout}>logout</button>
       {blogForm()}
       {blogRows()}
     </div>

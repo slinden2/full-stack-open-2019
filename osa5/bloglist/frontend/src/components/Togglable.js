@@ -30,8 +30,4 @@ const Togglable = React.forwardRef((props, ref) => {
   )
 })
 
-Notification.propTypes = {
-  ref: PropTypes.object.isRequired
-}
-
 export default Togglable
