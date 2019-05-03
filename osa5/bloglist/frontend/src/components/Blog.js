@@ -38,10 +38,10 @@ const Blog = ({ user, blog, blogs, setBlogs, notify }) => {
 
   return (
     <div style={blogStyle}>
-      <div onClick={() => setVisible(!visible)}>
+      <div onClick={() => setVisible(!visible)} className='title'>
         {blog.title} {blog.author}
       </div>
-      <div style={toggle(visible)}>
+      <div style={toggle(visible)} className='details'>
         {blog.url} <br />
         {blog.likes}
         <button onClick={updateLikes}>like</button> <br />
