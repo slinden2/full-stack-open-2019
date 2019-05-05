@@ -1,69 +1,78 @@
-const dummy = (blogs) => {
-  return 1
+const dummy = (blogs) => 1
+
+const byLikes = (a, b) => b.likes - a.likes
+const byValue = (a, b) => b.value - a.value
+
+const authorWithGreatest = (counts) => {
+  const authorValues = Object.keys(counts).map(author => ({
+    author,
+    value: counts[author]
+  }))
+
+  return authorValues.sort(byValue)[0]
 }
 
 const totalLikes = (blogs) => {
-  return blogs.reduce((total, blog) =>
-    ({ likes: total.likes + blog.likes })).likes
+  if (blogs.length === 0) {
+    return 0
+  }
+
+  return blogs.reduce((s, b) => s + b.likes, 0)
 }
 
 const favoriteBlog = (blogs) => {
-  if (blogs.length === 1) {
-    return {
-      title: blogs[0].title,
-      author: blogs[0].author,
-      likes: blogs[0].likes
-    }
+  if (blogs.length === 0) {
+    return null
   }
 
-  return blogs.reduce((favorite, blog) => {
-    if (favorite.likes < blog.likes) {
-      favorite = blog
-    }
-    return {
-      title: favorite.title,
-      author: favorite.author,
-      likes: favorite.likes
-    }
-  })
+  const { title, author, likes } = blogs.sort(byLikes)[0]
+
+  return { title, author, likes }
 }
 
 const mostBlogs = (blogs) => {
-  let authors = []
-  blogs.forEach(blog => {
-    if (!authors.some(b => b.author === blog.author)) {
-      // Alustetaan kirjoittaja taulukkoon, jos sitä ei vielä ole siellä
-      authors = authors.concat({ 'author': blog.author, 'blogs': 1 })
-    } else {
-      // Lisätään kirjoittajalle blogi
-      authors.find(b => b.author === blog.author).blogs += 1
-    }
-  })
+  if (blogs.length === 0) {
+    return null
+  }
 
-  // Palautetaan kirjoittaja, jolla on eniten blogeja
-  return authors.reduce((mostBlogs, blog) =>
-    mostBlogs.blogs < blog.blogs
-      ? blog
-      : mostBlogs
-  )
+  const blogCount = blogs.reduce((obj, blog) => {
+    if (obj[blog.author] === undefined) {
+      obj[blog.author] = 0
+    }
+
+    obj[blog.author] += 1
+
+    return obj
+  }, {})
+
+  const { author, value } = authorWithGreatest(blogCount)
+
+  return {
+    author,
+    blogs: value
+  }
 }
 
 const mostLikes = (blogs) => {
-  let authors = []
-  blogs.forEach(blog => {
-    if (!authors.some(b => b.author === blog.author)) {
-      authors = authors.concat({ 'author': blog.author, 'likes': blog.likes })
-    } else {
-      authors.find(b => b.author === blog.author).likes += blog.likes
+  if (blogs.length === 0) {
+    return null
+  }
+
+  const likeCount = blogs.reduce((obj, blog) => {
+    if (obj[blog.author] === undefined) {
+      obj[blog.author] = 0
     }
+    obj[blog.author] += blog.likes
 
-  })
+    return obj
+  }, {})
 
-  return authors.reduce((mostLikes, blog) =>
-    mostLikes.likes < blog.likes
-      ? blog
-      : mostLikes
-  )
+  const { author, value } = authorWithGreatest(likeCount)
+
+  return {
+    author,
+    likes: value
+  }
 }
 
 module.exports = {

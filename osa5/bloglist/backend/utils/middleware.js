@@ -1,27 +1,31 @@
-const tokenExtractor = (request, response, next) => {
-  const authorization = request.get('Authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer')) {
-    request.token = authorization.substring(7)
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7)
   }
+  return null
+}
+
+const tokenExtractor = (request, response, next) => {
+  request.token = getTokenFrom(request)
   next()
 }
 
-const unknownEndpoint = (request, response) => {
-  return response.status(404).json({ error: 'unknown endpoint' })
-}
-
 const errorHandler = (error, request, response, next) => {
-  if (error.name === 'ValidationError') {
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   } else if (error.name === 'JsonWebTokenError') {
-    return response.status(401).json({ error: 'token missing or invalid' })
+    return response.status(401).json({ error: 'invalid token' })
   }
+
+  console.error(error.message)
 
   next(error)
 }
 
 module.exports = {
-  tokenExtractor,
-  unknownEndpoint,
-  errorHandler
+  errorHandler,
+  tokenExtractor
 }

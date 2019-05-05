@@ -1,34 +1,9 @@
 const mongoose = require('mongoose')
-const uniqueValidator = require('mongoose-unique-validator')
-
-mongoose.set('useFindAndModify', false)
-mongoose.set('useCreateIndex', true)
-
-const urlValidator = (url) => {
-  const urlRegexp = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
-  return urlRegexp.test(url)
-}
 
 const blogSchema = mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-    minlength: 3,
-    unique: true
-  },
-  author:  {
-    type: String,
-    required: true,
-    minlength: 3
-  },
-  url: {
-    type: String,
-    required: true,
-    validate: {
-      validator: (url) => urlValidator(url),
-      message: props => `${props.value} is not a valid url!`
-    }
-  },
+  title: String,
+  author: String,
+  url: String,
   likes: Number,
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -38,12 +13,12 @@ const blogSchema = mongoose.Schema({
 
 blogSchema.set('toJSON', {
   transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id
+    returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
   }
 })
 
-blogSchema.plugin(uniqueValidator)
+const Blog = mongoose.model('Blog', blogSchema)
 
-module.exports = mongoose.model('Blog', blogSchema)
+module.exports = Blog
