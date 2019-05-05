@@ -105,11 +105,11 @@ const App = () => {
         <form onSubmit={(event) => handleLogin(event)} className='loginform'>
           <div>
             username
-            <input {...username} />
+            <input {...username.excludeReset()} />
           </div>
           <div>
             password
-            <input {...password} />
+            <input {...password.excludeReset()} />
           </div>
           <button type="submit">log in</button>
         </form>

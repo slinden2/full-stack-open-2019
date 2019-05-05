@@ -11,12 +11,21 @@ export const useField = name => {
     setValue('')
   }
 
+  const excludeReset = () => {
+    return ({
+      type: 'text',
+      name,
+      value,
+      onChange
+    })
+  }
+
   return ({
     type: 'text',
     name,
     value,
     onChange,
-    reset
+    reset,
+    excludeReset
   })
-
 }

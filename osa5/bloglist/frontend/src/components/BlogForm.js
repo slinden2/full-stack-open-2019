@@ -1,12 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useField } from '../hooks'
 import PropTypes from 'prop-types'
 import blogService from '../services/blogs'
 
 const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
-  // const [title, setTitle] = useState('')
-  // const [author, setAuthor] = useState('')
-  // const [url, setUrl] = useState('')
   const title = useField('title')
   const author = useField('author')
   const url = useField('url')
@@ -43,15 +40,15 @@ const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
       <form onSubmit={event => handleBlogCreation(event)}>
         <div>
           title:
-          <input {...title} />
+          <input {...title.excludeReset()} />
         </div>
         <div>
           author:
-          <input {...author} />
+          <input {...author.excludeReset()} />
         </div>
         <div>
           url:
-          <input {...url} />
+          <input {...url.excludeReset()} />
         </div>
         <button type="submit">create</button>
       </form>
