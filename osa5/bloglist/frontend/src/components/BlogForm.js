@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
+import { useField } from '../hooks'
 import PropTypes from 'prop-types'
 import blogService from '../services/blogs'
 
 const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  // const [title, setTitle] = useState('')
+  // const [author, setAuthor] = useState('')
+  // const [url, setUrl] = useState('')
+  const title = useField('title')
+  const author = useField('author')
+  const url = useField('url')
 
   const handleBlogCreation = async event => {
     event.preventDefault()
@@ -22,9 +26,9 @@ const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
       // lisääjän tiedot heti käyttöön. blog-muuttujassa on vain
       // lisääjän id.
       const newBlog = await blogService.getById(blog.id)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+      title.reset()
+      author.reset()
+      url.reset()
       blogFormRef.current.toggleVisibility()
       setBlogs(blogs.concat(newBlog))
       notify(`a new blog ${newBlog.title} successfully added`)
@@ -39,30 +43,15 @@ const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
       <form onSubmit={event => handleBlogCreation(event)}>
         <div>
           title:
-          <input
-            type="text"
-            name="title"
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-          />
+          <input {...title} />
         </div>
         <div>
           author:
-          <input
-            type="text"
-            name="author"
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-          />
+          <input {...author} />
         </div>
         <div>
           url:
-          <input
-            type="text"
-            name="url"
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-          />
+          <input {...url} />
         </div>
         <button type="submit">create</button>
       </form>

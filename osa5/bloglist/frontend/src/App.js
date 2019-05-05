@@ -105,19 +105,11 @@ const App = () => {
         <form onSubmit={(event) => handleLogin(event)} className='loginform'>
           <div>
             username
-            <input
-              type={username.type}
-              name={username.name}
-              onChange={username.onChange}
-            />
+            <input {...username} />
           </div>
           <div>
             password
-            <input
-              type={password.type}
-              name={password.name}
-              onChange={password.onChange}
-            />
+            <input {...password} />
           </div>
           <button type="submit">log in</button>
         </form>
