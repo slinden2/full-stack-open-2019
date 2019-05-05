@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useField } from './hooks'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
@@ -8,11 +9,12 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState({})
   const [timeoutId, setTimeoutId] = useState(0)
+
+  const username = useField('Username')
+  const password = useField('Password')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -43,16 +45,20 @@ const App = () => {
   const handleLogin = async event => {
     event.preventDefault()
 
-    try {
-      const user = await loginService.login({ username, password })
+    const credentials = {
+      username: username.value,
+      password: password.value
+    }
 
+    try {
+      const user = await loginService.login(credentials)
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
 
       setUser(user)
-      setUsername('')
-      setPassword('')
+      username.reset()
+      password.reset()
       blogService.setToken(user.token)
-      notify(`${username} successfully logged in`, false)
+      notify(`${credentials.username} successfully logged in`, false)
 
     } catch (exception) {
       notify(`${exception.response.data.error}`, true)
@@ -96,23 +102,21 @@ const App = () => {
       <div>
         <h2>Log in to application</h2>
         <Notification notification={notification} />
-        <form onSubmit={handleLogin} className='loginform'>
+        <form onSubmit={(event) => handleLogin(event)} className='loginform'>
           <div>
             username
             <input
-              type="text"
-              name="Username"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
+              type={username.type}
+              name={username.name}
+              onChange={username.onChange}
             />
           </div>
           <div>
             password
             <input
-              type="text"
-              name="Password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
+              type={password.type}
+              name={password.name}
+              onChange={password.onChange}
             />
           </div>
           <button type="submit">log in</button>
