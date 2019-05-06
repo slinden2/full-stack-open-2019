@@ -1,14 +1,16 @@
 import React from 'react';
+import { createNotification } from '../reducers/notificationReducer'
 
-const Notification = () => {
+const Notification = ({ store }) => {
   const style = {
     border: 'solid',
     padding: 10,
     borderWidth: 1
   }
+
   return (
     <div style={style}>
-      render here notification...
+      {store.getState().notification.message}
     </div>
   )
 }
