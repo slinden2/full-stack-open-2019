@@ -1,13 +1,6 @@
 const initialState = {
-  message: 'Alkuarvo',
+  message: '',
   error: false
-}
-
-export const createNotification = (message, error) => {
-  return {
-    type: 'DISPLAY',
-    data: { message, error }
-  }
 }
 
 const reducer = (state = initialState, action) => {
@@ -18,6 +11,19 @@ const reducer = (state = initialState, action) => {
       return initialState
     default:
       return state
+  }
+}
+
+export const createNotification = (message, error) => {
+  return {
+    type: 'DISPLAY',
+    data: { message, error }
+  }
+}
+
+export const hideNotification = () => {
+  return {
+    type: 'HIDE'
   }
 }
 

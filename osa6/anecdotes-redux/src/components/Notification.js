@@ -1,5 +1,4 @@
 import React from 'react';
-import { createNotification } from '../reducers/notificationReducer'
 
 const Notification = ({ store }) => {
   const style = {
