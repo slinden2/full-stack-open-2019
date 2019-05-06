@@ -19,7 +19,10 @@ const App = ({ store }) => {
   return (
     <div>
       <Notification store={store} />
-      <AnecdoteList store={store} displayNotification={displayNotification} />
+      <AnecdoteList 
+        store={store}
+        displayNotification={displayNotification}
+      />
       <AnecdoteForm store={store} />
     </div>
   )
