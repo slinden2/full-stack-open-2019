@@ -35,10 +35,10 @@ const AnecdoteList = ({ store, displayNotification }) => {
       <Filter store={store} />
       {anecdotes
         .sort(byVotes)
-        .filter(anecdote => 
+        .filter(anecdote =>
           anecdote.content.toLowerCase().includes(filter.toLowerCase()))
         .map(anecdote => anecdotesToShow(anecdote)
-      )}
+        )}
     </div>
   )
 }

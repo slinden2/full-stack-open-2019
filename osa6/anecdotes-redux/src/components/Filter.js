@@ -1,7 +1,7 @@
 import React from 'react'
 import { updateFilter } from '../reducers/filterReducer'
 
-const Filter = React.forwardRef(({ store }, ref) => {
+const Filter = ({ store }) => {
   const style = {
     marginBottom: 10
   }
@@ -12,9 +12,9 @@ const Filter = React.forwardRef(({ store }, ref) => {
 
   return (
     <div style={style}>
-      filter <input ref={ref} onChange={handleChange} />
+      filter <input onChange={handleChange} />
     </div>
   )
-})
+}
 
 export default Filter
