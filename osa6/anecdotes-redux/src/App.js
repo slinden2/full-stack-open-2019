@@ -1,33 +1,40 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux'
 import AnecdoteForm from './components/AnecdoteForm'
 import AnecdoteList from './components/AnecdoteList'
 import Notification from './components/Notification'
 import { createNotification, hideNotification } from './reducers/notificationReducer'
 
-const App = ({ store }) => {
+const App = props => {
   const [timeoutId, setTimeoutId] = useState(0)
 
   const displayNotification = (message, error) => {
     clearTimeout(timeoutId)
     setTimeoutId(0)
-    store.dispatch(createNotification(message, error))
+    props.createNotification(message, error)
     setTimeoutId(setTimeout(() => {
-      store.dispatch(hideNotification())
+      props.hideNotification()
     }, 5000))
   }
 
   return (
     <div>
-      {/* <Notification store={store} /> */}
+      <Notification />
       <AnecdoteList
         displayNotification={displayNotification}
       />
       <AnecdoteForm
-        store={store}
         displayNotification={displayNotification}
       />
     </div>
   )
 }
 
-export default App
+const mapDispatchToProps = {
+  createNotification,
+  hideNotification
+}
+
+const ConnectedApp = connect(null, mapDispatchToProps)(App)
+
+export default ConnectedApp

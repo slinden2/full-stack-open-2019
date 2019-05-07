@@ -2,12 +2,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { updateFilter } from '../reducers/filterReducer'
 
-const Filter = (props) => {
+const Filter = props => {
   const style = {
     marginBottom: 10
   }
 
-  const handleChange = (event) => {
+  const handleChange = event => {
     props.updateFilter(event.target.value)
   }
 
