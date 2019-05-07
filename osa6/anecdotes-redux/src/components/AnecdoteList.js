@@ -11,38 +11,38 @@ const AnecdoteList = props => {
     props.displayNotification(`You voted '${anecdote.content}'.`)
   }
 
-  const byVotes = (a, b) => b.votes - a.votes
-
-  const anecdotesToShow = anecdote => (
-    <div key={anecdote.id}>
-      <div>
-        {anecdote.content}
-      </div>
-      <div>
-        has {anecdote.votes}
-        <button onClick={() => vote(anecdote.id)}>vote</button>
-      </div>
-    </div>
-  )
-
   return (
     <div>
       <h2>Anecdotes</h2>
       <Filter />
-      {props.anecdotes
-        .sort(byVotes)
-        .filter(anecdote =>
-          anecdote.content.toLowerCase().includes(props.filter.toLowerCase()))
-        .map(anecdote => anecdotesToShow(anecdote)
-        )}
+      {props.visibleAnecdotes.map(anecdote => (
+        <div key={anecdote.id}>
+          <div>
+            {anecdote.content}
+          </div>
+          <div>
+            has {anecdote.votes}
+            <button onClick={() => vote(anecdote.id)}>vote</button>
+          </div>
+        </div>
+      ))}
     </div>
   )
+}
+
+const byVotes = (a, b) => b.votes - a.votes
+
+const anecdotesToShow = ({ anecdotes, filter }) => {
+  return anecdotes
+    .sort(byVotes)
+    .filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
 }
 
 const mapStateToProps = (state) => {
   return {
     anecdotes: state.anecdotes,
-    filter: state.filter
+    filter: state.filter,
+    visibleAnecdotes: anecdotesToShow(state)
   }
 }
 
