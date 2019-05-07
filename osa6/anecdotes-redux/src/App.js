@@ -22,10 +22,10 @@ const App = ({ store }) => {
       <AnecdoteList
         displayNotification={displayNotification}
       />
-      {/* <AnecdoteForm
+      <AnecdoteForm
         store={store}
         displayNotification={displayNotification}
-      /> */}
+      />
     </div>
   )
 }
