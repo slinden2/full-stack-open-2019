@@ -18,15 +18,14 @@ const App = ({ store }) => {
 
   return (
     <div>
-      <Notification store={store} />
+      {/* <Notification store={store} /> */}
       <AnecdoteList
-        store={store}
         displayNotification={displayNotification}
       />
-      <AnecdoteForm
+      {/* <AnecdoteForm
         store={store}
         displayNotification={displayNotification}
-      />
+      /> */}
     </div>
   )
 }
