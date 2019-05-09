@@ -7,12 +7,12 @@ const Notification = props => {
     border: 'solid',
     padding: 10,
     borderWidth: 1,
-    display: props.notification.message ? '' : 'none'
+    display: props.notification ? '' : 'none'
   }
 
   return (
     <div style={style}>
-      {props.notification.message}
+      {props.notification}
     </div>
   )
 }
