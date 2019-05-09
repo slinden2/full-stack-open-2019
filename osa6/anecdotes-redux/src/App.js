@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import AnecdoteForm from './components/AnecdoteForm'
 import AnecdoteList from './components/AnecdoteList'
 import Notification from './components/Notification'
-import { createNotification, hideNotification } from './reducers/notificationReducer'
+import { createNotification, hideNotification, setNotification } from './reducers/notificationReducer'
 import { initializeAnecdotes } from './reducers/anecdoteReducer'
 
 const App = props => {
@@ -38,6 +38,7 @@ const App = props => {
 const mapDispatchToProps = {
   createNotification,
   hideNotification,
+  setNotification,
   initializeAnecdotes
 }
 
