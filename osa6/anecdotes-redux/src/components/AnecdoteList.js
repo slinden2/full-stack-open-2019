@@ -6,8 +6,8 @@ import Filter from './Filter'
 const AnecdoteList = props => {
 
   const vote = (id) => {
-    props.voteAnecdote(id)
     const anecdote = props.anecdotes.find(a => a.id === id)
+    props.voteAnecdote(anecdote)
     props.displayNotification(`You voted '${anecdote.content}'.`)
   }
 
