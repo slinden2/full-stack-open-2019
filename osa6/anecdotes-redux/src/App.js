@@ -5,7 +5,6 @@ import AnecdoteList from './components/AnecdoteList'
 import Notification from './components/Notification'
 import { createNotification, hideNotification } from './reducers/notificationReducer'
 import { initializeAnecdotes } from './reducers/anecdoteReducer'
-import anecdoteService from './services/anecdotes'
 
 const App = props => {
   const [timeoutId, setTimeoutId] = useState(0)
