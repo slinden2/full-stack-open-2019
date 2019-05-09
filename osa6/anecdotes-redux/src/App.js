@@ -20,9 +20,7 @@ const App = props => {
   }
 
   useEffect(() => {
-    anecdoteService
-      .getAll()
-      .then(anecdotes => props.initializeAnecdotes(anecdotes))
+    props.initializeAnecdotes()
   }, [])
 
   return (
