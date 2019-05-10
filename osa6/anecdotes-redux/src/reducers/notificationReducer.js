@@ -1,11 +1,9 @@
-const initialState = ''
-
-const reducer = (state = initialState, action) => {
+const reducer = (state = '', action) => {
   switch (action.type) {
     case 'DISPLAY':
       return action.data
     case 'HIDE':
-      return initialState
+      return ''
     default:
       return state
   }

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { voteAnecdote } from '../reducers/anecdoteReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import Filter from './Filter'
+import Anecdote from './Anecdote'
 
 const AnecdoteList = props => {
 
@@ -17,15 +18,10 @@ const AnecdoteList = props => {
       <h2>Anecdotes</h2>
       <Filter />
       {props.visibleAnecdotes.map(anecdote => (
-        <div key={anecdote.id}>
-          <div>
-            {anecdote.content}
-          </div>
-          <div>
-            has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
-          </div>
-        </div>
+        <Anecdote
+          key={anecdote.id}
+          anecdote={anecdote}
+          vote={vote} />
       ))}
     </div>
   )
