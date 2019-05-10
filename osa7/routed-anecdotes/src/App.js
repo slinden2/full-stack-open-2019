@@ -119,7 +119,13 @@ const CreateNew = props => {
   )
 }
 
-const Anecdote = ({ anecdote }) => <p>{anecdote.content}</p>
+const Anecdote = ({ anecdote }) => (
+  <p>
+    {anecdote.content} <br />
+    {anecdote.author} <br />
+    <a href={`${anecdote.info}`}>{anecdote.info}</a>
+  </p>
+)
 
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
