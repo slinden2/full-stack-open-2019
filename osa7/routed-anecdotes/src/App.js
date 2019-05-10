@@ -177,7 +177,7 @@ const App = () => {
     setNotification(message)
     setTimeout(() => {
       setNotification("")
-    }, 5000);
+    }, 10000);
   }
 
   return (
