@@ -2,7 +2,8 @@ import React, { useState } from "react"
 import {
   BrowserRouter as Router,
   Route,
-  Link
+  Link,
+  Redirect
 } from "react-router-dom"
 
 const Menu = props => {
@@ -74,6 +75,7 @@ const CreateNew = props => {
   const [content, setContent] = useState("")
   const [author, setAuthor] = useState("")
   const [info, setInfo] = useState("")
+  const [submitted, setSubmitted] = useState(false)
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -83,6 +85,12 @@ const CreateNew = props => {
       info,
       votes: 0
     })
+    props.notify(`anecdote '${content}' created`)
+    setSubmitted(true)
+  }
+
+  if (submitted) {
+    return <Redirect to="/" />
   }
 
   return (
@@ -165,13 +173,21 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => (a.id === id ? voted : a)))
   }
 
+  const notify = message => {
+    setNotification(message)
+    setTimeout(() => {
+      setNotification("")
+    }, 5000);
+  }
+
   return (
     <div>
       <Router>
         <h1>Software anecdotes</h1>
         <Menu anecdotes={anecdotes} />
+        {notification && <div>{notification}</div>}
         <Route exact path="/" render={() => <AnecdoteList anecdotes={anecdotes} />} />
-        <Route path="/create" render={() => <CreateNew addNew={addNew} />} />
+        <Route path="/create" render={() => <CreateNew addNew={addNew} notify={notify} />} />
         <Route path="/about" render={() => <About />} />
         <Route exact path="/anecdotes/:id" render={({ match }) =>
           <Anecdote anecdote={anecdoteById(match.params.id)} />
