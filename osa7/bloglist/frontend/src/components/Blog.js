@@ -3,8 +3,10 @@ import { connect } from 'react-redux'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, likeBlogDispatch, notify, removeBlogDispatch, user }) => {
+const Blog = props => {
   const [visible, setVisible] = useState(false)
+
+  const { blog, notify, user } = props
 
   let showRemove = false
   if (user.username === blog.user.username
@@ -20,8 +22,6 @@ const Blog = ({ blog, likeBlogDispatch, notify, removeBlogDispatch, user }) => {
     marginBottom: 5
   }
 
-  const creator = blog.user.name ? blog.user.name : user.name
-
   const toggle = show => {
     return { display: show ? '' : 'none' }
   }
@@ -29,7 +29,7 @@ const Blog = ({ blog, likeBlogDispatch, notify, removeBlogDispatch, user }) => {
   const remove = async () => {
     const ok = window.confirm(`remove blog ${blog.title} by ${blog.author}?`)
     if (ok) {
-      removeBlogDispatch(blog)
+      props.removeBlog(blog)
       notify(`${blog.title} removed successfully`, false)
     }
   }
@@ -42,8 +42,8 @@ const Blog = ({ blog, likeBlogDispatch, notify, removeBlogDispatch, user }) => {
       <div style={toggle(visible)} className='details'>
         {blog.url} <br />
         {blog.likes}
-        <button onClick={() => likeBlogDispatch(blog)}>like</button> <br />
-        added by {creator} <br />
+        <button onClick={() => props.likeBlog(blog)}>like</button> <br />
+        added by {blog.user.name} <br />
         <button style={toggle(showRemove)} onClick={remove}>remove</button>
       </div>
     </div>
@@ -54,20 +54,19 @@ Blog.propTypes = {
   user: PropTypes.object.isRequired,
   blog: PropTypes.object.isRequired,
   notify: PropTypes.func.isRequired,
-  likeBlogDispatch: PropTypes.func.isRequired,
-  removeBlogDispatch: PropTypes.func.isRequired
+  likeBlog: PropTypes.func.isRequired,
+  removeBlog: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => {
   return {
-    // blogs: state.blogs,
-    user: state.user
+    user: state.auth
   }
 }
 
 const mapDispatchToProps = {
-  likeBlogDispatch: likeBlog,
-  removeBlogDispatch: removeBlog
+  likeBlog,
+  removeBlog
 }
 
 const ConnectedBlog = connect(mapStateToProps, mapDispatchToProps)(Blog)

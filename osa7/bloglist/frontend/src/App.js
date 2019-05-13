@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useField } from './hooks'
-import Blog from './components/Blog'
-import BlogForm from './components/BlogForm'
-import Togglable from './components/Togglable'
+import {
+  BrowserRouter as Router,
+  Route, Link, Redirect, WithRouter
+} from 'react-router-dom'
 import Notification from './components/Notification'
+import BlogList from './components/BlogList'
+import Users from './components/Users'
 import { setNotification } from './reducers/notificationReducer'
 import { initBlogs } from './reducers/blogReducer'
-import { login, setUser, logout } from './reducers/userReducer'
+import { login, setUser, logout } from './reducers/authReducer'
 import blogService from './services/blogs'
 
 const App = props => {
@@ -57,25 +60,6 @@ const App = props => {
 
   const blogFormRef = React.createRef()
 
-  const blogForm = () => (
-    <Togglable buttonLabel='add blog' ref={blogFormRef}>
-      <BlogForm
-        notify={notify}
-        blogFormRef={blogFormRef}
-      />
-    </Togglable>
-  )
-
-  const blogRows = () => {
-    const sortedBlogs = props.blogs.sort((a, b) => b.likes - a.likes)
-    return sortedBlogs.map(blog =>
-      <Blog
-        key={blog.id}
-        blog={blog}
-        notify={notify}
-      />)
-  }
-
   if (props.user === null) {
     return (
       <div>
@@ -102,8 +86,15 @@ const App = props => {
       <Notification />
       <p>{props.user.username} logged in</p>
       <button onClick={handleLogout}>logout</button>
-      {blogForm()}
-      {blogRows()}
+      <Router>
+        <Route exact path="/" render={() =>
+          <BlogList
+            notify={notify}  
+            blogFormRef={blogFormRef}
+          />}
+        />
+        <Route path="/users" render={() => <Users />} />
+      </Router>
     </div>
   )
 }
@@ -111,7 +102,7 @@ const App = props => {
 const mapStateToProps = state => {
   return {
     blogs: state.blogs,
-    user: state.user
+    user: state.auth
   }
 }
 

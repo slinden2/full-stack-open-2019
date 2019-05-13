@@ -5,9 +5,9 @@ const initialNotification = {
 
 const reducer = (state = initialNotification, action) => {
   switch (action.type) {
-  case 'DISPLAY':
+  case 'DISPLAY_NOTIFICATION':
     return action.data
-  case 'HIDE':
+  case 'HIDE_NOTIFICATION':
     return initialNotification
   default:
     return state
@@ -17,12 +17,12 @@ const reducer = (state = initialNotification, action) => {
 export const setNotification = (data, delay) => {
   return dispatch => {
     dispatch({
-      type: 'DISPLAY',
+      type: 'DISPLAY_NOTIFICATION',
       data
     })
     setTimeout(() => {
       dispatch({
-        type: 'HIDE'
+        type: 'HIDE_NOTIFICATION'
       })
     }, delay*1000)
   }

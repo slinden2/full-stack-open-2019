@@ -1,42 +1,21 @@
-import loginService from '../services/login'
-import blogService from '../services/blogs'
+import userService from '../services/users'
 
-const reducer = (state = null, action) => {
-  switch(action.type) {
-  case 'LOGIN':
+const reducer = (state = [], action) => {
+  switch (action.type) {
+  case 'INIT_USERS':
     return action.data
-  case 'SET':
-    return action.data
-  case 'LOGOUT':
-    return null
   default:
     return state
   }
 }
 
-export const login = credentials => {
+export const initUsers = () => {
   return async dispatch => {
-    const loggedUser = await loginService.login(credentials)
-    window.localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
-    blogService.setToken(loggedUser.token)
+    const users = await userService.getAll()
     dispatch({
-      type: 'LOGIN',
-      data: loggedUser
+      type: 'INIT_USERS',
+      data: users
     })
   }
 }
-
-export const setUser = user => {
-  return {
-    type: 'SET',
-    data: user
-  }
-}
-
-export const logout = () => {
-  return {
-    type: 'LOGOUT'
-  }
-}
-
 export default reducer
