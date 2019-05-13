@@ -6,6 +6,10 @@ const reducer = (state = [], action) => {
     return action.data
   case 'ADD':
     return [...state, action.data]
+  case 'LIKE':
+    return state.map(blog => blog.id !== action.data.id ? blog : action.data)
+  case 'REMOVE':
+    return state.filter(b => b.id !== action.data)
   default:
     return state
   }
@@ -30,5 +34,28 @@ export const createBlog = blog => {
     })
   }
 }
+
+export const likeBlog = blog => {
+  return async dispatch => {
+    const newBlog = { ...blog, likes: blog.likes + 1 }
+    const updatedBlog = await blogService.update(newBlog)
+    dispatch({
+      type: 'LIKE',
+      data: updatedBlog
+    })
+  }
+}
+
+export const removeBlog = blog => {
+  return async dispatch => {
+    await blogService.remove(blog.id)
+    dispatch({
+      type: 'REMOVE',
+      data: blog.id
+    })
+  }
+}
+
+
 
 export default reducer

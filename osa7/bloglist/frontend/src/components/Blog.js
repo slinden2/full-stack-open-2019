@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { likeBlog, removeBlog } from '../reducers/blogReducer'
 import PropTypes from 'prop-types'
-import blogService from '../services/blogs'
 
-const Blog = ({ user, blog, blogs, setBlogs, notify }) => {
+const Blog = ({ blog, likeBlogDispatch, notify, removeBlogDispatch, user }) => {
   const [visible, setVisible] = useState(false)
 
   let showRemove = false
-  if (user.username === blog.user.username) showRemove = true
+  if (user.username === blog.user.username
+    || user.id === blog.user) {
+    showRemove = true
+  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -16,22 +20,16 @@ const Blog = ({ user, blog, blogs, setBlogs, notify }) => {
     marginBottom: 5
   }
 
+  const creator = blog.user.name ? blog.user.name : user.name
+
   const toggle = show => {
     return { display: show ? '' : 'none' }
   }
 
-  const updateLikes = async () => {
-    const newBlog = { ...blog, likes: blog.likes + 1 }
-    await blogService.update(newBlog)
-    setBlogs(blogs.filter(b => blog.id !== b.id).concat(newBlog))
-  }
-
-  const removeBlog = async () => {
+  const remove = async () => {
     const ok = window.confirm(`remove blog ${blog.title} by ${blog.author}?`)
-
     if (ok) {
-      await blogService.remove(blog.id)
-      setBlogs(blogs.filter(b => blog.id !== b.id))
+      removeBlogDispatch(blog)
       notify(`${blog.title} removed successfully`, false)
     }
   }
@@ -44,9 +42,9 @@ const Blog = ({ user, blog, blogs, setBlogs, notify }) => {
       <div style={toggle(visible)} className='details'>
         {blog.url} <br />
         {blog.likes}
-        <button onClick={updateLikes}>like</button> <br />
-        added by {blog.user.name} <br />
-        <button style={toggle(showRemove)} onClick={removeBlog}>remove</button>
+        <button onClick={() => likeBlogDispatch(blog)}>like</button> <br />
+        added by {creator} <br />
+        <button style={toggle(showRemove)} onClick={remove}>remove</button>
       </div>
     </div>
   )
@@ -55,9 +53,23 @@ const Blog = ({ user, blog, blogs, setBlogs, notify }) => {
 Blog.propTypes = {
   user: PropTypes.object.isRequired,
   blog: PropTypes.object.isRequired,
-  blogs: PropTypes.array.isRequired,
-  setBlogs: PropTypes.func.isRequired,
-  notify: PropTypes.func.isRequired
+  notify: PropTypes.func.isRequired,
+  likeBlogDispatch: PropTypes.func.isRequired,
+  removeBlogDispatch: PropTypes.func.isRequired
 }
 
-export default Blog
+const mapStateToProps = state => {
+  return {
+    // blogs: state.blogs,
+    user: state.user
+  }
+}
+
+const mapDispatchToProps = {
+  likeBlogDispatch: likeBlog,
+  removeBlogDispatch: removeBlog
+}
+
+const ConnectedBlog = connect(mapStateToProps, mapDispatchToProps)(Blog)
+
+export default ConnectedBlog
