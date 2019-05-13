@@ -1,9 +1,13 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { useField } from '../hooks'
 import PropTypes from 'prop-types'
-import blogService from '../services/blogs'
+import { createBlog } from '../reducers/blogReducer'
 
-const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
+const BlogForm = props => {
+  const notify = props.notify
+  const blogFormRef = props.blogFormRef
+
   const title = useField('title')
   const author = useField('author')
   const url = useField('url')
@@ -16,13 +20,12 @@ const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
     }
 
     try {
-      const blog = await blogService.create(blogObject)
+      props.createBlog(blogObject)
       title.reset()
       author.reset()
       url.reset()
       blogFormRef.current.toggleVisibility()
-      setBlogs(blogs.concat(blog))
-      notify(`a new blog ${blog.title} successfully added`)
+      notify(`a new blog ${blogObject.title} successfully added`)
     } catch (exception) {
       notify(`${exception.response.data.error}`, true)
     }
@@ -51,10 +54,14 @@ const BlogForm = ({ blogs, setBlogs, notify, blogFormRef }) => {
 }
 
 BlogForm.propTypes = {
-  blogs: PropTypes.array.isRequired,
-  setBlogs: PropTypes.func.isRequired,
   notify: PropTypes.func.isRequired,
   blogFormRef: PropTypes.object.isRequired
 }
 
-export default BlogForm
+const mapDispatchToProps = {
+  createBlog
+}
+
+const ConnectedBlogForm = connect(null, mapDispatchToProps)(BlogForm)
+
+export default ConnectedBlogForm

@@ -3,7 +3,7 @@ const initialNotification = {
   error: false
 }
 
-const reducer = (state = '', action) => {
+const reducer = (state = initialNotification, action) => {
   switch (action.type) {
   case 'DISPLAY':
     return action.data

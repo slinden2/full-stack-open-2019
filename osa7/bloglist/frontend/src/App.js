@@ -7,7 +7,8 @@ import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import { setNotification } from './recuders/notificationReducer'
+import { setNotification } from './reducers/notificationReducer'
+import { initBlogs } from './reducers/blogReducer'
 
 const App = props => {
   const [blogs, setBlogs] = useState([])
@@ -17,9 +18,7 @@ const App = props => {
   const password = useField('Password')
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    props.initBlogs()
   }, [])
 
   useEffect(() => {
@@ -70,8 +69,6 @@ const App = props => {
   const blogForm = () => (
     <Togglable buttonLabel='add blog' ref={blogFormRef}>
       <BlogForm
-        blogs={blogs}
-        setBlogs={setBlogs}
         notify={notify}
         blogFormRef={blogFormRef}
       />
@@ -79,7 +76,7 @@ const App = props => {
   )
 
   const blogRows = () => {
-    const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+    const sortedBlogs = props.blogs.sort((a, b) => b.likes - a.likes)
     return sortedBlogs.map(blog =>
       <Blog
         key={blog.id}
@@ -123,10 +120,17 @@ const App = props => {
   )
 }
 
-const mapDispatchToProps = {
-  setNotification
+const mapStateToProps = state => {
+  return {
+    blogs: state.blogs
+  }
 }
 
-const ConnectedApp = connect(null, mapDispatchToProps)(App)
+const mapDispatchToProps = {
+  setNotification,
+  initBlogs
+}
+
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
 
 export default ConnectedApp
