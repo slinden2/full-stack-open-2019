@@ -11,6 +11,7 @@ const reducer = (state = [], action) => {
   case 'REMOVE_BLOG':
     return state.filter(b => b.id !== action.data)
   case 'ADD_COMMENT': {
+    // Deep copy needed because of a nested list
     const newState = JSON.parse(JSON.stringify(state))
     const newBlog = newState.find(blog => blog.id === action.data.blog)
     newBlog.comments = newBlog.comments.concat({ text: action.data.text, id: action.data.id })

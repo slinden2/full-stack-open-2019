@@ -15,6 +15,7 @@ import { initBlogs } from './reducers/blogReducer'
 import { login, setUser, logout } from './reducers/authReducer'
 import { initUsers } from './reducers/userReducer'
 import blogService from './services/blogs'
+import { Container, Menu } from 'semantic-ui-react'
 
 const App = props => {
   const username = useField('Username')
@@ -70,18 +71,9 @@ const App = props => {
 
   const blogFormRef = React.createRef()
 
-  const linkStyle = {
-    padding: 5
-  }
-
-  const menuStyle = {
-    background: '#c0c5ce',
-    padding: 5
-  }
-
   if (props.user === null) {
     return (
-      <div>
+      <Container>
         <h2>Log in to application</h2>
         <Notification />
         <form onSubmit={(event) => handleLogin(event)} className='loginform'>
@@ -95,19 +87,27 @@ const App = props => {
           </div>
           <button type="submit">log in</button>
         </form>
-      </div>
+      </Container>
     )
   }
 
   return (
-    <div>
+    <Container>
       <Router>
-        <div style={menuStyle}>
-          <Link style={linkStyle} to="/">blogs</Link>
-          <Link to="/users">users</Link>
-          <span style={linkStyle}>{props.user.username} logged in</span>
-          <button onClick={handleLogout}>logout</button>
-        </div>
+        <Menu>
+          <Link to="/">
+            <Menu.Item>blogs</Menu.Item>
+          </Link>
+          <Link to="/users">
+            <Menu.Item>users</Menu.Item>
+          </Link>
+          <Menu.Item>
+            {props.user.username} logged in
+          </Menu.Item>
+          <Menu.Item onClick={handleLogout}>
+            logout
+          </Menu.Item>
+        </Menu>
         <h2>blogs app</h2>
         <Notification />
         <Route exact path="/" render={() =>
@@ -127,15 +127,10 @@ const App = props => {
               blog={blogById(match.params.id)}
               notify={notify}
             /> :
-            <Blog
-              path={match.path}
-              blog={blogById(match.params.id)}
-              notify={notify}
-            />
-            // <Redirect to="/" />
+            <Redirect to="/" />
         } />
       </Router>
-    </div>
+    </Container>
   )
 }
 

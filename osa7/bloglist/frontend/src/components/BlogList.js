@@ -3,15 +3,17 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
+import { List } from 'semantic-ui-react'
+import './BlogList.css'
 
 const BlogList = ({ notify, blogFormRef, blogs }) => {
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
+  const listStyle = {
+    border: '1px solid',
+    borderRadius: '8px',
+    padding: '5px',
+    marginBottom: '3px',
+
   }
 
   const blogForm = () => (
@@ -26,11 +28,11 @@ const BlogList = ({ notify, blogFormRef, blogs }) => {
   return (
     <div>
       {blogForm()}
-      {blogs.map(blog =>
-        <div style={blogStyle} key={blog.id}>
-          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-        </div>
-      )}
+      <List>
+        {blogs.map(blog =>
+          <List.Item key={blog.id} className='blogitem' style={listStyle}><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></List.Item>                
+        )}
+      </List>
     </div>
   )
 }

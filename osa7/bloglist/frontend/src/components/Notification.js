@@ -1,16 +1,16 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import './Notification.css'
+import { Message } from 'semantic-ui-react'
 
 const Notification = props => {
-  if (!props.notification) return null
+  if (!props.notification.message) return null
 
   const style = props.notification.error ? 'error' : 'success'
 
   return (
-    <div className={style}>
+    <Message className="style">
       {props.notification.message}
-    </div>
+    </Message>
   )
 }
 
