@@ -3,10 +3,11 @@ import { connect } from 'react-redux'
 import { useField } from './hooks'
 import {
   BrowserRouter as Router,
-  Route, Link, Redirect, WithRouter
+  Route, Redirect
 } from 'react-router-dom'
 import Notification from './components/Notification'
 import BlogList from './components/BlogList'
+import Blog from './components/Blog'
 import Users from './components/Users'
 import User from './components/User'
 import { setNotification } from './reducers/notificationReducer'
@@ -65,6 +66,7 @@ const App = props => {
   }
 
   const userById = id => props.users.find(user => user.id === id)
+  const blogById = id => props.blogs.find(blog => blog.id === id)
 
   const blogFormRef = React.createRef()
 
@@ -97,13 +99,22 @@ const App = props => {
       <Router>
         <Route exact path="/" render={() =>
           <BlogList
-            notify={notify}  
+            notify={notify}
             blogFormRef={blogFormRef}
           />}
         />
         <Route exact path="/users" render={({ match }) => <Users path={match.path} />} />
         <Route path="/users/:id" render={({ match }) =>
           <User user={userById(match.params.id)} />
+        } />
+        <Route path="/blogs/:id" render={({ match }) =>
+          blogById(match.params.id) ?
+            <Blog
+              path={match.path}
+              blog={blogById(match.params.id)}
+              notify={notify}
+            /> :
+            <Redirect to="/" />
         } />
       </Router>
     </div>

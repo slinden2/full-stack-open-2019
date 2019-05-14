@@ -1,10 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
-import Blog from './Blog'
 
-const BlogList = ({ notify, blogFormRef, orderedBlogs }) => {
+const BlogList = ({ notify, blogFormRef, blogs }) => {
+
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
 
   const blogForm = () => (
     <Togglable buttonLabel='add blog' ref={blogFormRef}>
@@ -18,24 +26,21 @@ const BlogList = ({ notify, blogFormRef, orderedBlogs }) => {
   return (
     <div>
       {blogForm()}
-      {orderedBlogs.map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          notify={notify}
-        />
+      {blogs.map(blog =>
+        <div style={blogStyle} key={blog.id}>
+          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+        </div>
       )}
     </div>
   )
 
 }
 
-const sortedBlogs = blogs => blogs.sort((a, b) => b.likes - a.likes)
+
 
 const mapStateToPros = state => {
   return {
-    blogs: state.blogs,
-    orderedBlogs: sortedBlogs(state.blogs)
+    blogs: state.blogs
   }
 }
 

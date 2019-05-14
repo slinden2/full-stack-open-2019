@@ -1,25 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 import PropTypes from 'prop-types'
 
 const Blog = props => {
-  const [visible, setVisible] = useState(false)
-
   const { blog, notify, user } = props
+  if (blog === undefined) return null
 
   let showRemove = false
   if (user.username === blog.user.username
     || user.id === blog.user) {
     showRemove = true
-  }
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
   }
 
   const toggle = show => {
@@ -35,12 +26,12 @@ const Blog = props => {
   }
 
   return (
-    <div style={blogStyle} className='blogitem'>
-      <div onClick={() => setVisible(!visible)} className='title'>
+    <div className='blogitem'>
+      <h1 className='title'>
         {blog.title} {blog.author}
-      </div>
-      <div style={toggle(visible)} className='details'>
-        {blog.url} <br />
+      </h1>
+      <div className='details'>
+        <a href={blog.url}>{blog.url}</a> <br />
         {blog.likes}
         <button onClick={() => props.likeBlog(blog)}>like</button> <br />
         added by {blog.user.name} <br />
@@ -52,7 +43,6 @@ const Blog = props => {
 
 Blog.propTypes = {
   user: PropTypes.object.isRequired,
-  blog: PropTypes.object.isRequired,
   notify: PropTypes.func.isRequired,
   likeBlog: PropTypes.func.isRequired,
   removeBlog: PropTypes.func.isRequired
