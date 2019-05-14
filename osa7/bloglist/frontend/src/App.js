@@ -8,9 +8,11 @@ import {
 import Notification from './components/Notification'
 import BlogList from './components/BlogList'
 import Users from './components/Users'
+import User from './components/User'
 import { setNotification } from './reducers/notificationReducer'
 import { initBlogs } from './reducers/blogReducer'
 import { login, setUser, logout } from './reducers/authReducer'
+import { initUsers } from './reducers/userReducer'
 import blogService from './services/blogs'
 
 const App = props => {
@@ -28,6 +30,10 @@ const App = props => {
       props.setUser(user)
       blogService.setToken(user.token)
     }
+  }, [])
+
+  useEffect(() => {
+    props.initUsers()
   }, [])
 
   const notify = (message, error) => {
@@ -57,6 +63,8 @@ const App = props => {
     notify(`${props.user.username} successfully logged out`, false)
     props.logout()
   }
+
+  const userById = id => props.users.find(user => user.id === id)
 
   const blogFormRef = React.createRef()
 
@@ -93,7 +101,10 @@ const App = props => {
             blogFormRef={blogFormRef}
           />}
         />
-        <Route path="/users" render={() => <Users />} />
+        <Route exact path="/users" render={({ match }) => <Users path={match.path} />} />
+        <Route path="/users/:id" render={({ match }) =>
+          <User user={userById(match.params.id)} />
+        } />
       </Router>
     </div>
   )
@@ -102,7 +113,8 @@ const App = props => {
 const mapStateToProps = state => {
   return {
     blogs: state.blogs,
-    user: state.auth
+    user: state.auth,
+    users: state.users
   }
 }
 
@@ -111,7 +123,8 @@ const mapDispatchToProps = {
   initBlogs,
   login,
   setUser,
-  logout
+  logout,
+  initUsers
 }
 
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)

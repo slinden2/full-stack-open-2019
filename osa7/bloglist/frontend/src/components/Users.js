@@ -1,16 +1,15 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
-import { initUsers } from '../reducers/userReducer'
+import { BrowserRouter as Router, Link } from 'react-router-dom'
 
 const Users = props => {
-  useEffect(() => {
-    props.initUsers()
-  }, [])
 
   const userRow = user => {
     return (
       <tr key={user.id}>
-        <td>{user.name}</td>
+        <td>
+          <Link to={`${props.path}/${user.id}`}>{user.name}</Link>
+        </td>
         <td>{user.blogs.length}</td>
       </tr>
     )
@@ -41,11 +40,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = {
-  initUsers
-}
-
-const ConnectedUsers = connect(mapStateToProps, mapDispatchToProps)(Users)
+const ConnectedUsers = connect(mapStateToProps)(Users)
 
 export default ConnectedUsers
 
