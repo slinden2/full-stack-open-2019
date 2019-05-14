@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { useField } from './hooks'
 import {
   BrowserRouter as Router,
-  Route, Redirect
+  Route, Redirect, Link
 } from 'react-router-dom'
 import Notification from './components/Notification'
 import BlogList from './components/BlogList'
@@ -70,6 +70,15 @@ const App = props => {
 
   const blogFormRef = React.createRef()
 
+  const linkStyle = {
+    padding: 5
+  }
+
+  const menuStyle = {
+    background: '#c0c5ce',
+    padding: 5
+  }
+
   if (props.user === null) {
     return (
       <div>
@@ -92,11 +101,17 @@ const App = props => {
 
   return (
     <div>
-      <h2>blogs</h2>
-      <Notification />
-      <p>{props.user.username} logged in</p>
-      <button onClick={handleLogout}>logout</button>
       <Router>
+        <div style={menuStyle}>
+          <Link style={linkStyle} to="/">blogs</Link>
+          <Link to="/users">users</Link>
+          <span style={linkStyle}>{props.user.username} logged in</span>
+          <button onClick={handleLogout}>logout</button>
+        </div>
+        <h2>blogs app</h2>
+        <Notification />
+        
+
         <Route exact path="/" render={() =>
           <BlogList
             notify={notify}
