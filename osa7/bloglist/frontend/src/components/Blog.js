@@ -27,15 +27,21 @@ const Blog = props => {
 
   return (
     <div className='blogitem'>
-      <h1 className='title'>
-        {blog.title} {blog.author}
-      </h1>
-      <div className='details'>
+      <div>
+        <h1>
+          {blog.title} {blog.author}
+        </h1>
         <a href={blog.url}>{blog.url}</a> <br />
         {blog.likes}
         <button onClick={() => props.likeBlog(blog)}>like</button> <br />
         added by {blog.user.name} <br />
         <button style={toggle(showRemove)} onClick={remove}>remove</button>
+      </div>
+      <div>
+        <h3>comments</h3>
+        <ul>
+          {blog.comments.map(comment => <li key={comment.id}>{comment.text}</li>)}
+        </ul>
       </div>
     </div>
   )

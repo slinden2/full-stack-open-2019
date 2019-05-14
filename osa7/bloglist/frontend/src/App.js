@@ -110,8 +110,6 @@ const App = props => {
         </div>
         <h2>blogs app</h2>
         <Notification />
-        
-
         <Route exact path="/" render={() =>
           <BlogList
             notify={notify}
@@ -129,7 +127,12 @@ const App = props => {
               blog={blogById(match.params.id)}
               notify={notify}
             /> :
-            <Redirect to="/" />
+            <Blog
+              path={match.path}
+              blog={blogById(match.params.id)}
+              notify={notify}
+            />
+            // <Redirect to="/" />
         } />
       </Router>
     </div>
