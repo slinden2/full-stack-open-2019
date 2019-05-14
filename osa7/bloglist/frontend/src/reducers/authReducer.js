@@ -1,5 +1,6 @@
 import loginService from '../services/login'
 import blogService from '../services/blogs'
+import { setNotificationNoDispatch } from './notificationReducer'
 
 const reducer = (state = null, action) => {
   switch(action.type) {
@@ -16,13 +17,26 @@ const reducer = (state = null, action) => {
 
 export const login = credentials => {
   return async dispatch => {
-    const loggedUser = await loginService.login(credentials)
-    window.localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
-    blogService.setToken(loggedUser.token)
-    dispatch({
-      type: 'LOGIN',
-      data: loggedUser
-    })
+    try {
+      const loggedUser = await loginService.login(credentials)
+      window.localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
+      blogService.setToken(loggedUser.token)
+      dispatch({
+        type: 'LOGIN',
+        data: loggedUser
+      })
+      const notificication = {
+        message: `${loggedUser.username} has succesfully logged in`,
+        error: false
+      }
+      setNotificationNoDispatch(dispatch, notificication, 5)
+    } catch (exception) {
+      const error = {
+        message: exception.response.data.error,
+        error: true
+      }
+      setNotificationNoDispatch(dispatch, error, 5)
+    }
   }
 }
 

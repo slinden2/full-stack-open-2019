@@ -50,14 +50,9 @@ const App = props => {
       password: password.value
     }
 
-    try {
-      props.login(credentials)
-      username.reset()
-      password.reset()
-      notify(`${credentials.username} successfully logged in`, false)
-    } catch (exception) {
-      notify(`${exception.response.data.error}`, true)
-    }
+    props.login(credentials)
+    username.reset()
+    password.reset()
   }
 
   const handleLogout = () => {

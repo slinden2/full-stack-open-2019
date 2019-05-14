@@ -8,7 +8,7 @@ const Notification = props => {
   const style = props.notification.error ? 'error' : 'success'
 
   return (
-    <Message className="style">
+    <Message className={style}>
       {props.notification.message}
     </Message>
   )
