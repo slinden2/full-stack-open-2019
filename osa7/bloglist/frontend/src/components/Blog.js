@@ -40,7 +40,9 @@ const Blog = props => {
       <div>
         <h3>comments</h3>
         <ul>
-          {blog.comments.map(comment => <li key={comment.id}>{comment.text}</li>)}
+          {blog.comments.map(comment =>
+            <li key={comment.id}>{comment.text}</li>
+          )}
         </ul>
       </div>
     </div>

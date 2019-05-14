@@ -6,8 +6,8 @@ const Comment = require('../models/comment')
 
 router.get('/', async (request, response) => {
   const blogs = await Blog.find({})
-    .populate('comment', { text: 1 })
-    // .populate('user', { username: 1, name: 1 })
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments', { text: 1 })
 
   response.json(blogs.map(b => b.toJSON()))
 })
@@ -53,22 +53,18 @@ router.post('/', async (request, response) => {
 
 router.post('/:id/comments', async (request, response) => {
   const blog = await Blog.findById(request.params.id)
-  console.log(blog);
 
   if (!blog) {
     return response.status(400).send({ error: 'blog doesn\'t exist' }).end()
   }
 
   const comment = new Comment(request.body)
-  console.log(comment);
-  comment.blog = blog.id
-  console.log(comment);
+  comment.blog = blog._id
 
   const savedComment = await comment.save()
-  console.log(savedComment);
   blog.comments = blog.comments.concat(savedComment._id)
-  const savedBlog = await blog.save()
-  console.log(savedBlog);
+  await blog.save()
+
   response.status(201).json(savedComment.toJSON())
 })
 
