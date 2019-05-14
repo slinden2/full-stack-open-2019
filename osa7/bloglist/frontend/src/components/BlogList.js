@@ -33,10 +33,7 @@ const BlogList = ({ notify, blogFormRef, blogs }) => {
       )}
     </div>
   )
-
 }
-
-
 
 const mapStateToPros = state => {
   return {

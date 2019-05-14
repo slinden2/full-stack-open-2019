@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import Comments from './Comments'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 import PropTypes from 'prop-types'
 
@@ -37,14 +38,7 @@ const Blog = props => {
         added by {blog.user.name} <br />
         <button style={toggle(showRemove)} onClick={remove}>remove</button>
       </div>
-      <div>
-        <h3>comments</h3>
-        <ul>
-          {blog.comments.map(comment =>
-            <li key={comment.id}>{comment.text}</li>
-          )}
-        </ul>
-      </div>
+      <Comments blog={blog} />
     </div>
   )
 }
