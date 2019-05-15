@@ -24,6 +24,9 @@ module.exports = {
     "react", "jest"
   ],
   "parser": "babel-eslint",
+  "globals": {
+    "BACKEND_URL": true
+  },
   "rules": {
     "indent": [
       "error",
