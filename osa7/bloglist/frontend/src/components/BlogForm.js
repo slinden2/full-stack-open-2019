@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useField } from '../hooks'
-import PropTypes from 'prop-types'
 import { createBlog } from '../reducers/blogReducer'
 
 const BlogForm = props => {
@@ -51,11 +50,6 @@ const BlogForm = props => {
       </form>
     </div>
   )
-}
-
-BlogForm.propTypes = {
-  notify: PropTypes.func.isRequired,
-  blogFormRef: PropTypes.object.isRequired
 }
 
 const mapDispatchToProps = {

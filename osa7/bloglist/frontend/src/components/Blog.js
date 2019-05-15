@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Comments from './Comments'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
-import PropTypes from 'prop-types'
 
 const Blog = props => {
   const { blog, notify, user } = props
@@ -41,13 +40,6 @@ const Blog = props => {
       <Comments blog={blog} />
     </div>
   )
-}
-
-Blog.propTypes = {
-  user: PropTypes.object.isRequired,
-  notify: PropTypes.func.isRequired,
-  likeBlog: PropTypes.func.isRequired,
-  removeBlog: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => {
