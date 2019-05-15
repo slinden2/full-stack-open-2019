@@ -5,3 +5,4 @@ notes-app/
 build/
 requests/
 backend_backup/
+bloglist-backup-before-webpack
