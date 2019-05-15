@@ -16,6 +16,7 @@ import { login, setUser, logout } from './reducers/authReducer'
 import { initUsers } from './reducers/userReducer'
 import blogService from './services/blogs'
 import { Container, Menu } from 'semantic-ui-react'
+import './App.css'
 
 const App = props => {
   const username = useField('Username')

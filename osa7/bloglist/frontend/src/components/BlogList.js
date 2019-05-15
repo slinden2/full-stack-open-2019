@@ -30,7 +30,14 @@ const BlogList = ({ notify, blogFormRef, blogs }) => {
       {blogForm()}
       <List>
         {blogs.map(blog =>
-          <List.Item key={blog.id} className='blogitem' style={listStyle}><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></List.Item>                
+          <List.Item
+            key={blog.id}
+            className='blogitem'
+            style={listStyle}>
+            <Link to={`/blogs/${blog.id}`}>
+              {blog.title}
+            </Link>
+          </List.Item>
         )}
       </List>
     </div>
