@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { useField } from '../hooks'
 import { createBlog } from '../reducers/blogReducer'
+import { initUsers } from '../reducers/userReducer'
 
 const BlogForm = props => {
   const notify = props.notify
@@ -19,7 +20,9 @@ const BlogForm = props => {
     }
 
     try {
-      props.createBlog(blogObject)
+      // Reinit users so that the num of blogs on the users view
+      // updated without reloading
+      props.createBlog(blogObject).then(() => props.initUsers())
       title.reset()
       author.reset()
       url.reset()
@@ -53,7 +56,8 @@ const BlogForm = props => {
 }
 
 const mapDispatchToProps = {
-  createBlog
+  createBlog,
+  initUsers
 }
 
 const ConnectedBlogForm = connect(null, mapDispatchToProps)(BlogForm)
