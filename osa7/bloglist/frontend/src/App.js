@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { useField } from './hooks'
 import {
   BrowserRouter as Router,
-  Route, Redirect, Link, NavLink
+  Route, Redirect, NavLink
 } from 'react-router-dom'
 import { Container, Menu, Form, Button } from 'semantic-ui-react'
 import Notification from './components/Notification'

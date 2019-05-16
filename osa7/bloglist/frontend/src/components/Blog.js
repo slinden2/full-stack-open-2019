@@ -7,14 +7,8 @@ import { initUsers } from '../reducers/userReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const Blog = props => {
-  const { blog, user } = props
+  const { blog } = props
   if (blog === undefined) return null
-
-  let showRemove = false
-  if (user.username === blog.user.username
-    || user.id === blog.user) {
-    showRemove = true
-  }
 
   const toggle = show => {
     return { display: show ? '' : 'none' }
@@ -60,19 +54,25 @@ const Blog = props => {
               {blog.user.name}
             </List.Content>
           </List.Item>
-          <Button compact style={toggle(showRemove)} onClick={remove}>remove</Button>
+          <Button compact style={toggle(props.showRemove())} onClick={remove}>remove</Button>
         </List>
         <Divider />
-        
       </div>
       <Comments blog={blog} />
     </div>
   )
 }
 
-const mapStateToProps = state => {
+const showRemove = (state, ownProps) => {
+  const user = state.auth
+  const { blog } = ownProps
+  return user.username === blog.user.username
+    || user.id === blog.user
+}
+
+const mapStateToProps = (state, ownProps) => {
   return {
-    user: state.auth
+    showRemove: () => showRemove(state, ownProps)
   }
 }
 

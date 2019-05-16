@@ -4,6 +4,19 @@ const reducer = (state = [], action) => {
   switch (action.type) {
   case 'INIT_USERS':
     return action.data
+  case 'ADD_BLOG': {
+    const newState = state.map(user => {
+      if (user.id === action.data.user.id) {
+        const blog = (({ author, id, title, url }) =>
+          ({ author, id, title, url }))(action.data)
+        user.blogs = user.blogs.concat(blog)
+        return user
+      } else {
+        return user
+      }
+    })
+    return newState
+  }
   default:
     return state
   }

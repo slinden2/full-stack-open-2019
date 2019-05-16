@@ -1,12 +1,12 @@
 import blogService from '../services/blogs'
+import { setNotification } from '../reducers/notificationReducer'
 
 const reducer = (state = [], action) => {
   switch (action.type) {
   case 'INIT_BLOGS':
     return action.data
   case 'ADD_BLOG':
-    // [...state, action.data]
-    return state.map(b => b.id === action.data.id ? action.data : b)
+    return state.concat(action.data)
   case 'LIKE_BLOG':
     return state.map(blog => blog.id !== action.data.id ? blog : action.data)
   case 'REMOVE_BLOG':
@@ -51,6 +51,7 @@ export const likeBlog = blog => {
       type: 'LIKE_BLOG',
       data: updatedBlog
     })
+    dispatch(setNotification(`You liked ${blog.title}`, false, 5))
   }
 }
 
@@ -61,6 +62,7 @@ export const removeBlog = blog => {
       type: 'REMOVE_BLOG',
       data: blog.id
     })
+    dispatch(setNotification(`'${blog.title}' was removed`, false, 5))
   }
 }
 
@@ -72,6 +74,7 @@ export const addComment = (id, content) => {
       type: 'ADD_COMMENT',
       data: addedComment
     })
+    dispatch(setNotification(`Your comment '${content}' was added.`, false, 5))
   }
 }
 
