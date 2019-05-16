@@ -1,28 +1,29 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Button, Input, List } from 'semantic-ui-react'
 import { addComment } from '../reducers/blogReducer'
 import { useField } from '../hooks'
 
 const Comment = props => {
   if (props.blog.comments === undefined) return null
 
-  const comment = useField('comment')
+  const [comment, resetComment] = useField('comment')
 
   const handleComment = () => {
     props.addComment(props.blog.id, comment.value)
-    comment.reset()
+    resetComment()
   }
 
   return (
     <div>
       <h3>comments</h3>
-      <input {...comment.excludeReset()} />
-      <button onClick={handleComment}>add comment</button>
-      <ul>
+      <Input {...comment} />
+      <Button onClick={handleComment}>add comment</Button>
+      <List>
         {props.blog.comments.map(comment =>
-          <li key={comment.id}>{comment.text}</li>
+          <List.Item key={comment.id}>{comment.text}</List.Item>
         )}
-      </ul>
+      </List>
     </div>
   )
 }

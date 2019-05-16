@@ -20,12 +20,10 @@ export const useField = name => {
     })
   }
 
-  return ({
+  return [{
     type: 'text',
     name,
     value,
     onChange,
-    reset,
-    excludeReset
-  })
+  }, reset]
 }

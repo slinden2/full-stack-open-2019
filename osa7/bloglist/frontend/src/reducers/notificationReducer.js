@@ -14,11 +14,16 @@ const reducer = (state = initialNotification, action) => {
   }
 }
 
-export const setNotification = (data, delay) => {
+export const setNotification = (message, error, delay) => {
+  const notification = {
+    message,
+    error
+  }
+
   return dispatch => {
     dispatch({
       type: 'DISPLAY_NOTIFICATION',
-      data
+      data: notification
     })
     setTimeout(() => {
       dispatch({
@@ -29,16 +34,16 @@ export const setNotification = (data, delay) => {
 }
 
 // Can be called from reducers
-export const setNotificationNoDispatch = (dispatch, data, delay) => {
-  dispatch({
-    type: 'DISPLAY_NOTIFICATION',
-    data
-  })
-  setTimeout(() => {
-    dispatch({
-      type: 'HIDE_NOTIFICATION'
-    })
-  }, delay*1000)
-}
+// export const setNotificationNoDispatch = (dispatch, data, delay) => {
+//   dispatch({
+//     type: 'DISPLAY_NOTIFICATION',
+//     data
+//   })
+//   setTimeout(() => {
+//     dispatch({
+//       type: 'HIDE_NOTIFICATION'
+//     })
+//   }, delay*1000)
+// }
 
 export default reducer

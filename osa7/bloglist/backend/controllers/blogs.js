@@ -44,11 +44,14 @@ router.post('/', async (request, response) => {
     blog.likes = 0
   }
 
-  const result = await blog.save()
+  const savedBlog = await blog.save()
   user.blogs = user.blogs.concat(blog)
   await user.save()
 
-  response.status(201).json(result)
+  const populatedBlog = await Blog.findById(savedBlog.id)
+    .populate('user', { username: 1, name: 1 })
+
+  response.status(201).json(populatedBlog)
 })
 
 router.post('/:id/comments', async (request, response) => {
@@ -75,11 +78,12 @@ router.put('/:id', async (request, response) => {
     author, title, url, likes,
   }
 
-  const updatedNote = await Blog
+  const updatedBlog = await Blog
     .findByIdAndUpdate(request.params.id, blog, { new: true })
+    .populate('user', { username: 1, name: 1 })
     .populate('comments', { text: 1 })
 
-  response.json(updatedNote.toJSON())
+  response.json(updatedBlog.toJSON())
 })
 
 router.delete('/:id', async (request, response) => {

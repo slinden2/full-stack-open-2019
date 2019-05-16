@@ -6,39 +6,30 @@ import BlogForm from './BlogForm'
 import { List } from 'semantic-ui-react'
 import './BlogList.css'
 
-const BlogList = ({ notify, blogFormRef, blogs }) => {
-
-  const listStyle = {
-    border: '1px solid',
-    borderRadius: '8px',
-    padding: '5px',
-    marginBottom: '3px',
-
-  }
+const BlogList = ({ blogFormRef, blogs }) => {
 
   const blogForm = () => (
     <Togglable buttonLabel='add blog' ref={blogFormRef}>
-      <BlogForm
-        notify={notify}
-        blogFormRef={blogFormRef}
-      />
+      <BlogForm blogFormRef={blogFormRef} />
     </Togglable>
   )
 
   return (
     <div>
       {blogForm()}
-      <List>
-        {blogs.map(blog =>
-          <List.Item
-            key={blog.id}
-            className='blogitem'
-            style={listStyle}>
-            <Link to={`/blogs/${blog.id}`}>
-              {blog.title}
-            </Link>
+      <List divided relaxed>
+        {blogs.map(blog => (
+          <List.Item key={blog.id}>
+            <List.Content>
+              <List.Header>
+                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+              </List.Header>
+              <List.Description>
+                by {blog.author}
+              </List.Description>
+            </List.Content>
           </List.Item>
-        )}
+        ))}
       </List>
     </div>
   )

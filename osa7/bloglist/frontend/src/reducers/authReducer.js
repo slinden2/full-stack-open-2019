@@ -1,6 +1,6 @@
 import loginService from '../services/login'
 import blogService from '../services/blogs'
-import { setNotificationNoDispatch } from './notificationReducer'
+import { setNotification } from './notificationReducer'
 
 const reducer = (state = null, action) => {
   switch(action.type) {
@@ -15,7 +15,12 @@ const reducer = (state = null, action) => {
   }
 }
 
-export const login = credentials => {
+export const login = (username, password) => {
+  const credentials = {
+    username,
+    password
+  }
+
   return async dispatch => {
     try {
       const loggedUser = await loginService.login(credentials)
@@ -25,31 +30,38 @@ export const login = credentials => {
         type: 'LOGIN',
         data: loggedUser
       })
-      const notificication = {
-        message: `${loggedUser.username} has succesfully logged in`,
-        error: false
-      }
-      setNotificationNoDispatch(dispatch, notificication, 5)
+      dispatch(setNotification(
+        `${loggedUser.username} has succesfully logged in`, false, 5
+      ))
     } catch (exception) {
-      const error = {
-        message: exception.response.data.error,
-        error: true
-      }
-      setNotificationNoDispatch(dispatch, error, 5)
+      dispatch(setNotification(exception.response.data.error, true, 5))
     }
   }
 }
 
-export const setUser = user => {
-  return {
-    type: 'SET_USER',
-    data: user
+export const setUser = () => {
+  return dispatch => {
+    const loggedUserJSON = window.localStorage.getItem('loggedUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      blogService.setToken(user.token)
+      dispatch({
+        type: 'SET_USER',
+        data: user
+      })
+    }
   }
 }
 
 export const logout = () => {
-  return {
-    type: 'LOGOUT'
+  return dispatch => {
+    window.localStorage.removeItem('loggedUser')
+    dispatch(setNotification(
+      'You have been successfully logged out', false, 5)
+    )
+    dispatch({
+      type: 'LOGOUT'
+    })
   }
 }
 

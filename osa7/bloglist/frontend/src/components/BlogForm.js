@@ -1,16 +1,17 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Form, Button, Input } from 'semantic-ui-react'
 import { useField } from '../hooks'
 import { createBlog } from '../reducers/blogReducer'
 import { initUsers } from '../reducers/userReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
 const BlogForm = props => {
-  const notify = props.notify
-  const blogFormRef = props.blogFormRef
+  const [title, resetTitle] = useField('title')
+  const [author, resetAuthor] = useField('author')
+  const [url, resetUrl] = useField('url')
 
-  const title = useField('title')
-  const author = useField('author')
-  const url = useField('url')
+  const blogFormRef = props.blogFormRef
 
   const handleBlogCreation = async event => {
     event.preventDefault()
@@ -20,44 +21,48 @@ const BlogForm = props => {
     }
 
     try {
-      // Reinit users so that the num of blogs on the users view
-      // updated without reloading
-      props.createBlog(blogObject).then(() => props.initUsers())
-      title.reset()
-      author.reset()
-      url.reset()
+      props.createBlog(blogObject)
+      resetTitle()
+      resetAuthor()
+      resetUrl()
+      props.setNotification(
+        `a new blog ${blogObject.title} successfully added`, false, 5)
       blogFormRef.current.toggleVisibility()
-      notify(`a new blog ${blogObject.title} successfully added`)
     } catch (exception) {
-      notify(`${exception.response.data.error}`, true)
+      props.setNotification('Blog was not added!', true, 5)
     }
+  }
+
+  const formStyle = {
+    marginBottom: '5px'
   }
 
   return (
     <div>
       <h1>create new</h1>
-      <form onSubmit={event => handleBlogCreation(event)}>
-        <div>
-          title:
-          <input {...title.excludeReset()} />
-        </div>
-        <div>
-          author:
-          <input {...author.excludeReset()} />
-        </div>
-        <div>
-          url:
-          <input {...url.excludeReset()} />
-        </div>
-        <button type="submit">create</button>
-      </form>
+      <Form style={formStyle} onSubmit={event => handleBlogCreation(event)}>
+        <Form.Field>
+          <label>title:</label>
+          <Input {...title} />
+        </Form.Field>
+        <Form.Field>
+          <label>author:</label>
+          <Input {...author} />
+        </Form.Field>
+        <Form.Field>
+          <label>url:</label>
+          <Input {...url} />
+        </Form.Field>
+        <Button primary type="submit">create</Button>
+      </Form>
     </div>
   )
 }
 
 const mapDispatchToProps = {
   createBlog,
-  initUsers
+  initUsers,
+  setNotification
 }
 
 const ConnectedBlogForm = connect(null, mapDispatchToProps)(BlogForm)

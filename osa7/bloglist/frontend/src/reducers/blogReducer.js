@@ -5,7 +5,8 @@ const reducer = (state = [], action) => {
   case 'INIT_BLOGS':
     return action.data
   case 'ADD_BLOG':
-    return [...state, action.data]
+    // [...state, action.data]
+    return state.map(b => b.id === action.data.id ? action.data : b)
   case 'LIKE_BLOG':
     return state.map(blog => blog.id !== action.data.id ? blog : action.data)
   case 'REMOVE_BLOG':

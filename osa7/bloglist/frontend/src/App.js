@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 import { useField } from './hooks'
 import {
   BrowserRouter as Router,
-  Route, Redirect, Link
+  Route, Redirect, Link, NavLink
 } from 'react-router-dom'
+import { Container, Menu, Form, Button } from 'semantic-ui-react'
 import Notification from './components/Notification'
 import BlogList from './components/BlogList'
 import Blog from './components/Blog'
@@ -14,52 +15,28 @@ import { setNotification } from './reducers/notificationReducer'
 import { initBlogs } from './reducers/blogReducer'
 import { login, setUser, logout } from './reducers/authReducer'
 import { initUsers } from './reducers/userReducer'
-import blogService from './services/blogs'
-import { Container, Menu } from 'semantic-ui-react'
-import './App.css'
 
 const App = props => {
-  const username = useField('Username')
-  const password = useField('Password')
+  const [username, resetUsername] = useField('Username')
+  const [password, resetPassword] = useField('Password')
 
   useEffect(() => {
     props.initBlogs()
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      props.setUser(user)
-      blogService.setToken(user.token)
-    }
+    props.setUser()
   }, [])
 
   useEffect(() => {
     props.initUsers()
   }, [])
 
-  const notify = (message, error) => {
-    props.setNotification({ message, error }, 5)
-  }
-
   const handleLogin = async event => {
     event.preventDefault()
-
-    const credentials = {
-      username: username.value,
-      password: password.value
-    }
-
-    props.login(credentials)
-    username.reset()
-    password.reset()
-  }
-
-  const handleLogout = () => {
-    window.localStorage.removeItem('loggedUser')
-    notify(`${props.user.username} successfully logged out`, false)
-    props.logout()
+    props.login(username.value, password.value)
+    resetUsername()
+    resetPassword()
   }
 
   const userById = id => props.users.find(user => user.id === id)
@@ -72,17 +49,17 @@ const App = props => {
       <Container>
         <h2>Log in to application</h2>
         <Notification />
-        <form onSubmit={(event) => handleLogin(event)} className='loginform'>
-          <div>
-            username
-            <input {...username.excludeReset()} />
-          </div>
-          <div>
-            password
-            <input {...password.excludeReset()} />
-          </div>
-          <button type="submit">log in</button>
-        </form>
+        <Form onSubmit={(event) => handleLogin(event)} className='loginform'>
+          <Form.Field>
+            <label>username</label>
+            <input {...username} />
+          </Form.Field>
+          <Form.Field>
+            <label>password</label>
+            <input {...password} />
+          </Form.Field>
+          <Button type="submit">log in</Button>
+        </Form>
       </Container>
     )
   }
@@ -91,28 +68,19 @@ const App = props => {
     <Container>
       <Router>
         <Menu>
-          <Link to="/">
-            <Menu.Item>blogs</Menu.Item>
-          </Link>
-          <Link to="/users">
-            <Menu.Item>users</Menu.Item>
-          </Link>
-          <Menu.Item>
-            {props.user.username} logged in
-          </Menu.Item>
-          <Menu.Item onClick={handleLogout}>
-            logout
-          </Menu.Item>
+          <Menu.Item name='blogs' as={NavLink} exact to='/' content='blogs' />
+          <Menu.Item name='users' as={NavLink} exact to='/users' content='users' />
+          <Menu.Item name='logout' content='logout' onClick={props.logout} />
         </Menu>
-        <h2>blogs app</h2>
+        {props.user.username} logged in
+        <h1>blogs app</h1>
         <Notification />
         <Route exact path="/" render={() =>
-          <BlogList
-            notify={notify}
-            blogFormRef={blogFormRef}
-          />}
+          <BlogList blogFormRef={blogFormRef} />}
         />
-        <Route exact path="/users" render={({ match }) => <Users path={match.path} />} />
+        <Route exact path="/users" render={({ match }) =>
+          <Users path={match.path} />}
+        />
         <Route path="/users/:id" render={({ match }) =>
           <User user={userById(match.params.id)} />
         } />
@@ -121,7 +89,6 @@ const App = props => {
             <Blog
               path={match.path}
               blog={blogById(match.params.id)}
-              notify={notify}
             /> :
             <Redirect to="/" />
         } />
