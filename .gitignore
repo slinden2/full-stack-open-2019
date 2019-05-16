@@ -6,3 +6,5 @@ build/
 requests/
 backend_backup/
 bloglist-backup-before-webpack
+osa7/bloglist/frontend/cypress/integration/examples
+

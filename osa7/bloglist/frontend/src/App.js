@@ -17,8 +17,8 @@ import { login, setUser, logout } from './reducers/authReducer'
 import { initUsers } from './reducers/userReducer'
 
 const App = props => {
-  const [username, resetUsername] = useField('Username')
-  const [password, resetPassword] = useField('Password')
+  const [username, resetUsername] = useField('username')
+  const [password, resetPassword] = useField('password')
 
   useEffect(() => {
     props.initBlogs()
@@ -58,7 +58,7 @@ const App = props => {
             <label>password</label>
             <input {...password} />
           </Form.Field>
-          <Button type="submit">log in</Button>
+          <Button type="submit" data-cy="login">log in</Button>
         </Form>
       </Container>
     )

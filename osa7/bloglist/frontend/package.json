@@ -19,7 +19,8 @@
     "start": "webpack-dev-server --mode=development --inline --history-api-fallback",
     "build": "webpack --mode=production",
     "test": "node scripts/test.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "cypress:open": "cypress open"
   },
   "browserslist": [
     ">0.2%",
@@ -36,6 +37,7 @@
     "babel-loader": "^8.0.6",
     "copy-webpack-plugin": "^5.0.3",
     "css-loader": "^2.1.1",
+    "cypress": "^3.2.0",
     "eslint": "^5.16.0",
     "eslint-plugin-jest": "^22.5.1",
     "eslint-plugin-react": "^7.13.0",
