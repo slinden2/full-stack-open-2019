@@ -9,7 +9,7 @@ import './BlogList.css'
 const BlogList = ({ blogFormRef, blogs }) => {
 
   const blogForm = () => (
-    <Togglable buttonLabel='add blog' ref={blogFormRef}>
+    <Togglable buttonLabel='add blog' cy="addblog" ref={blogFormRef}>
       <BlogForm blogFormRef={blogFormRef} />
     </Togglable>
   )

@@ -43,17 +43,17 @@ const BlogForm = props => {
       <Form style={formStyle} onSubmit={event => handleBlogCreation(event)}>
         <Form.Field>
           <label>title:</label>
-          <Input {...title} />
+          <input {...title} />
         </Form.Field>
         <Form.Field>
           <label>author:</label>
-          <Input {...author} />
+          <input {...author} />
         </Form.Field>
         <Form.Field>
           <label>url:</label>
-          <Input {...url} />
+          <input {...url} />
         </Form.Field>
-        <Button primary type="submit">create</Button>
+        <Button primary type="submit" data-cy="create">create</Button>
       </Form>
     </div>
   )

@@ -43,7 +43,7 @@ const Blog = props => {
             </List.Header>
             <List.Content>
               <label>{blog.likes}</label>
-              <Button compact onClick={() => props.likeBlog(blog)}>like</Button>
+              <Button compact onClick={() => props.likeBlog(blog)} data-cy="like">like</Button>
             </List.Content>
           </List.Item>
           <List.Item>
