@@ -10,13 +10,11 @@ const reducer = (state = [], action) => {
   case 'LIKE_BLOG':
     return state.map(blog => blog.id !== action.data.id ? blog : action.data)
   case 'REMOVE_BLOG':
-    return state.filter(b => b.id !== action.data)
+    return state.filter(b => b.id !== action.data.id)
   case 'ADD_COMMENT': {
-    // Deep copy needed because of a nested list
-    const newState = JSON.parse(JSON.stringify(state))
-    const newBlog = newState.find(blog => blog.id === action.data.blog)
+    const newBlog = { ...state.find(blog => blog.id === action.data.blog) }
     newBlog.comments = newBlog.comments.concat({ text: action.data.text, id: action.data.id })
-    return [...newState.filter(blog => blog.id !== newBlog.id), newBlog]
+    return [...state.filter(blog => blog.id !== newBlog.id), newBlog]
   }
   default:
     return state
@@ -60,7 +58,7 @@ export const removeBlog = blog => {
     await blogService.remove(blog.id)
     dispatch({
       type: 'REMOVE_BLOG',
-      data: blog.id
+      data: blog
     })
     dispatch(setNotification(`'${blog.title}' was removed`, false, 5))
   }

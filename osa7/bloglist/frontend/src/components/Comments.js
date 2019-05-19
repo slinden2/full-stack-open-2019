@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Button, Input, List } from 'semantic-ui-react'
+import { Button, List } from 'semantic-ui-react'
 import { addComment } from '../reducers/blogReducer'
 import { useField } from '../hooks'
 
@@ -17,8 +17,8 @@ const Comment = props => {
   return (
     <div>
       <h3>comments</h3>
-      <Input {...comment} />
-      <Button onClick={handleComment}>add comment</Button>
+      <input {...comment} />
+      <Button onClick={handleComment} data-cy="addcomment">add comment</Button>
       <List>
         {props.blog.comments.map(comment =>
           <List.Item key={comment.id}>{comment.text}</List.Item>

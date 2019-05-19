@@ -33,17 +33,4 @@ export const setNotification = (message, error, delay) => {
   }
 }
 
-// Can be called from reducers
-// export const setNotificationNoDispatch = (dispatch, data, delay) => {
-//   dispatch({
-//     type: 'DISPLAY_NOTIFICATION',
-//     data
-//   })
-//   setTimeout(() => {
-//     dispatch({
-//       type: 'HIDE_NOTIFICATION'
-//     })
-//   }, delay*1000)
-// }
-
 export default reducer

@@ -17,6 +17,17 @@ const reducer = (state = [], action) => {
     })
     return newState
   }
+  case 'REMOVE_BLOG': {
+    const newState = state.map(user => {
+      if (user.id === action.data.user.id) {
+        const newBlogs = user.blogs.filter(blog => blog.id !== action.data.id)
+        return { ...user, blogs: newBlogs }
+      } else {
+        return user
+      }
+    })
+    return newState
+  }
   default:
     return state
   }

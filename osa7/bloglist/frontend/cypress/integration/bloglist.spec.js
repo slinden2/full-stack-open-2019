@@ -28,38 +28,46 @@ describe('Bloglist', function() {
       cy.contains('cypress logged in')
     })
 
-    it('a new blog can be added', function() {
-      cy.get('[data-cy=addblog]')
-        .click()
-      cy.get('[data-cy=title]')
-        .type('cypress test blog')
-      cy.get('[data-cy=author]')
-        .type('cypress')
-      cy.get('[data-cy=url]')
-        .type('www')
-      cy.get('[data-cy=create]')
-        .click()
-      cy.contains('cypress test blog')
+    describe('a blog can be added', function() {
+      beforeEach(function() {
+        cy.get('[data-cy=addblog]')
+          .click()
+        cy.get('[data-cy=title]')
+          .type('cypress test blog')
+        cy.get('[data-cy=author]')
+          .type('cypress')
+        cy.get('[data-cy=url]')
+          .type('www')
+        cy.get('[data-cy=create]')
+          .click()
+        cy.contains('cypress test blog')
+      })
+      
+      it('it can be liked', function() {
+        cy.get('div.item > div > div > a')
+          .click()
+        cy.get('[data-cy=like]')
+          .click()
+        cy.contains('label', '1')
+        cy.contains('You liked cypress test blog')
+      })
+
+      it('a comment can be added', function() {
+        cy.get('div.item > div > div > a')
+          .click()
+        cy.get('[data-cy=comment]')
+          .type('a comment from cypress')
+        cy.get('[data-cy=addcomment]')
+          .click()
+        cy.contains('a comment from cypress')
+      })
+
+    
     })
 
-    it('a like can be added', function() {
-      cy.get('[data-cy=addblog]')
-        .click()
-      cy.get('[data-cy=title]')
-        .type('cypress test blog')
-      cy.get('[data-cy=author]')
-        .type('cypress')
-      cy.get('[data-cy=url]')
-        .type('www')
-      cy.get('[data-cy=create]')
-        .click()
-      cy.get('div.item > div > div > a')
-        .click()
-      cy.get('[data-cy=like]')
-        .click()
-      cy.contains('label', '1')
-      cy.contains('You liked cypress test blog')
-    })
+    
+
+    
 
   })
 })
