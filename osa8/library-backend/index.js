@@ -112,6 +112,10 @@ const typeDefs = gql`
       author: String!
       genres: [String!]!
     ): Book
+    editAuthor(
+      name: String!,
+      setBornTo: Int
+    ): Author
   }
 `
 
@@ -120,11 +124,11 @@ const resolvers = {
     authorCount: () => authors.length,
     bookCount: () => books.length,
     allBooks: (root, args) => {
-      console.log(args);
       if (!args) return books
+
       return books
         .filter(b => args.author ? b.author === args.author : true)
-        .filter(b => args.genre ? b.genres.includes(args.genre) : true)
+        .filter(b => args.genre ? b.genres.find(g => g === args.genre) : true)
     },
     allAuthors: () => authors,
   },
@@ -133,21 +137,30 @@ const resolvers = {
   },
   Mutation: {
     addBook: (root, args) => {
-      console.log(root);
-      console.log(args);
       if (books.find(b => b.title === args.title)) {
         throw new UserInputError('title must be unique', {
           invalidArgs: args.title
         })
       }
 
-      if (!authors.includes(args.author)) {
+      if (!authors.find(a => a.name === args.author)) {
         authors = authors.concat({ name: args.author, id: uuid() })
       }
 
       const book = { ...args, id: uuid() }
       books = books.concat(book)
       return book
+    },
+    editAuthor: (root, args) => {
+      if (!authors.find(a => a.name === args.name)) return null
+      
+      const author = {
+        name: args.name,
+        born: args.setBornTo,
+      }
+
+      authors = authors.map(a => a.name === author.name ? author : a)
+      return author
     }
   }
 }
