@@ -1,4 +1,5 @@
 import React from 'react'
+import EditAuthor from './EditAuthor'
 
 const Authors = (props) => {
   if (!props.show) {
@@ -34,7 +35,7 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
-
+      <EditAuthor editAuthor={props.editAuthor} />
     </div>
   )
 }
