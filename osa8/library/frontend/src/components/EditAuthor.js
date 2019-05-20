@@ -1,8 +1,13 @@
 import React, { useState } from 'react'
+import Select from 'react-select'
 
 const EditAuthor = props => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
+
+  const handleNameChange = ({ label }) => {
+    setName(label)
+  }
 
   const updateAuthor = async e => {
     e.preventDefault()
@@ -18,16 +23,22 @@ const EditAuthor = props => {
     setBorn('')
   }
 
+  const options = props.authors.map(a => ({
+    label: a.name,
+    value: a.name,
+  }))
+
   return (
     <div>
       <h2>set birthyear</h2>
       <form onSubmit={updateAuthor}>
         <div>
-          <label>name</label>
-          <input 
-            type="text"
-            value={name}
-            onChange={({ target: { value } }) => setName(value)} />
+          <Select
+            options={options}
+            onChange={handleNameChange}
+            placeholder="select author..."
+            
+          />
         </div>
         <div>
           <label>born</label>
