@@ -1,5 +1,24 @@
 const { ApolloServer, gql, UserInputError } = require('apollo-server')
 const uuid = require('uuid/v1')
+const mongoose = require('mongoose')
+const Book = require('./models/book')
+const Author = require('./models/author')
+
+mongoose.set('useFindAndModify', false)
+
+require('dotenv').config()
+
+const MONGODB_URI = process.env.MONGODB_URI
+console.log('connecting to', MONGODB_URI)
+
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true })
+  .then(() => {
+    console.log('connected to MongoDB')
+  })
+  .catch((error) => {
+    console.log('error connecting to MOngoDB: ', error.message)
+  })
+
 
 let authors = [
   {
@@ -94,7 +113,7 @@ const typeDefs = gql`
   type Book {
     title: String!
     published: Int!
-    author: String!
+    author: Author!
     genres: [String!]!
     id: ID!
   }
@@ -137,19 +156,22 @@ const resolvers = {
     bookCount: root => (books.filter(b => b.author === root.name)).length
   },
   Mutation: {
-    addBook: (root, args) => {
-      if (books.find(b => b.title === args.title)) {
+    addBook: async (root, args) => {
+      const existingBooks = await Book.find({})
+      if (existingBooks.map(b => b.title).includes(args.title)) {
         throw new UserInputError('title must be unique', {
           invalidArgs: args.title
         })
       }
 
-      if (!authors.find(a => a.name === args.author)) {
-        authors = authors.concat({ name: args.author, id: uuid() })
+      const author = await Author.findOne({ name: args.author })
+      let newAuthor
+      if (!author) {
+        newAuthor = new Author({ name: args.author })
+        await newAuthor.save()
       }
-
-      const book = { ...args, id: uuid() }
-      books = books.concat(book)
+      const book = new Book({ ...args, author: author || newAuthor })
+      await book.save()
       return book
     },
     editAuthor: (root, args) => {
@@ -174,3 +196,15 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })
+
+
+// mutation addBook {
+//   addBook(title: "Book", author: "tester", published: 1920, genres: ["genre1"]) {
+//     title
+//     author {
+//       name
+//     }
+//     published
+//     genres
+//   }
+// }
