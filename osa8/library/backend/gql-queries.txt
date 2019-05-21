@@ -1,0 +1,57 @@
+# Add Book
+mutation addBook {
+  addBook(
+    title: "Book",
+    author: "Author",
+    published: 2000,
+    genres: ["genre1"]
+  ) {
+    title
+    author {
+      name
+    }
+    published
+    genres
+  }
+}
+
+# Total Book Count
+{
+  bookCount
+}
+
+# Book Count per Author
+query allAuthors {
+  allAuthors {
+    name
+    bookCount
+  }
+}
+
+# Author Count
+{
+  authorCount
+}
+
+# editAuthor
+mutation editAuthor {
+  editAuthor(
+    name: "tester",
+    setBornTo: 1989
+  ) {
+    name
+    born
+  }
+}
+
+# allBooks
+{
+  allBooks(genre: "genre1") {
+    title
+    author {
+      name
+      born
+    }
+    genres
+  }
+}
