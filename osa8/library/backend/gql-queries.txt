@@ -55,3 +55,22 @@ mutation editAuthor {
     genres
   }
 }
+
+# createUser
+mutation createUser {
+  createUser(
+    username: "test1"
+    favoriteGenre: "genre1"
+  ) {
+  	username
+    favoriteGenre
+  }
+}
+
+# login
+mutation login {
+  login(
+    username: "test1"
+    password: "salainen"
+  )
+}
