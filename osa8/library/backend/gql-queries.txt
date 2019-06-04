@@ -70,7 +70,9 @@ mutation createUser {
 # login
 mutation login {
   login(
-    username: "test1"
+    username: "test1",
     password: "salainen"
-  )
+  ) {
+    value
+  }
 }
