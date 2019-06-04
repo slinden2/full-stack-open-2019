@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { gql } from 'apollo-boost'
 import { useQuery, useMutation } from 'react-apollo-hooks'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
+import LoginForm from './components/LoginForm'
 
 const ALL_AUTHORS = gql`
   {
@@ -59,10 +60,26 @@ const UPDATE_AUTHOR = gql`
   }
 `
 
+const LOGIN = gql`
+  mutation login($username: String!, $password: String!) {
+    login(
+      username: $username,
+      password: $password
+    ) {
+      value
+    }
+  }
+`
+
 const App = () => {
   const [page, setPage] = useState('authors')
   const authorResult = useQuery(ALL_AUTHORS)
   const bookResult = useQuery(ALL_BOOKS)
+  const [token, setToken] = useState(null)
+
+  useEffect(() => {
+    setToken(localStorage.getItem('library-user-token'))
+  }, [])
 
   const addBook = useMutation(CREATE_BOOK, {
     refetchQueries: [
@@ -75,12 +92,22 @@ const App = () => {
     refetchQueries: [{ query: ALL_AUTHORS }],
   })
 
+  const login = useMutation(LOGIN)
+
+  const logout = () => {
+    setToken(null)
+    localStorage.removeItem('library-user-token')
+    setPage('authors')
+  }
+
   return (
     <div>
       <div>
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
-        <button onClick={() => setPage('add')}>add book</button>
+        {token && <button onClick={() => setPage('add')}>add book</button>}
+        {token && <button onClick={logout}>logout</button>}
+        {!token && <button onClick={() => setPage('login')}>login</button>}
       </div>
 
       <Authors
@@ -97,6 +124,13 @@ const App = () => {
       <NewBook
         show={page === 'add'}
         addBook={addBook}
+      />
+
+      <LoginForm
+        show={page === 'login'}
+        login={login}
+        setToken={(token) => setToken(token)}
+        setPage={setPage}
       />
 
     </div>
