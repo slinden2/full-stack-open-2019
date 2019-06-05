@@ -76,3 +76,11 @@ mutation login {
     value
   }
 }
+
+# logged user
+{
+  me {
+    username
+    favoriteGenre
+  }
+}

@@ -71,11 +71,22 @@ const LOGIN = gql`
   }
 `
 
+const LOGGED_USER = gql`
+  {
+    me {
+      username
+      favoriteGenre
+    }
+  }
+`
+
 const App = () => {
   const [page, setPage] = useState('authors')
   const authorResult = useQuery(ALL_AUTHORS)
   const bookResult = useQuery(ALL_BOOKS)
+  const loggedUserResult = useQuery(LOGGED_USER)
   const [token, setToken] = useState(null)
+  console.log(loggedUserResult);
 
   useEffect(() => {
     setToken(localStorage.getItem('library-user-token'))
@@ -119,6 +130,7 @@ const App = () => {
       <Books
         show={page === 'books'}
         result={bookResult}
+        token={token}
       />
 
       <NewBook

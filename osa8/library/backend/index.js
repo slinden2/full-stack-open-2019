@@ -81,12 +81,9 @@ const resolvers = {
     authorCount: () => Author.collection.countDocuments(),
     bookCount: () => Book.collection.countDocuments(),
     allBooks: async (root, args) => {
-      console.log(root);
-      console.log(args);
       const { author, genre } = args
 
       if (!genre && !author) {
-        console.log("runs");
         return await Book.find({})
       }
       
@@ -103,6 +100,7 @@ const resolvers = {
       return authors
     },
     me: async (root, args, context) => {
+      console.log(context.currentUser);
       return context.currentUser
     }
   },
