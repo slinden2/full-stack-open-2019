@@ -83,14 +83,25 @@ const LOGGED_USER = gql`
 const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
+  const [loggedUser, setLoggedUser] = useState(null)
+  const loggedUserResult = useQuery(LOGGED_USER)
   const authorResult = useQuery(ALL_AUTHORS)
   const bookResult = useQuery(ALL_BOOKS)
-  const loggedUserResult = useQuery(LOGGED_USER)
   const client = useApolloClient()
 
   useEffect(() => {
     setToken(localStorage.getItem('library-user-token'))
   }, [])
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await client.query({
+        query: LOGGED_USER
+      })
+      console.log("useEffectin user", data.me);
+      setLoggedUser(data.me)
+    })()
+  }, [token])
 
   const addBook = useMutation(CREATE_BOOK, {
     refetchQueries: [
@@ -106,10 +117,14 @@ const App = () => {
   const login = useMutation(LOGIN)
 
   const logout = () => {
+    console.log("logataan ulos");
     setToken(null)
+    console.log("token nullattu");
     localStorage.removeItem('library-user-token')
-    setPage('authors')
+    console.log("localStorage tyhjennetty");
     client.resetStore()
+    console.log("välimuisti resetoitu");
+    setPage('authors')
   }
 
   return (

@@ -13,8 +13,6 @@ const Books = (props) => {
 
   const books = props.bookResult.data.allBooks
 
-  console.log(props.loggedUserResult.data.me);
-
   const getGenres = () => {
     return [...new Set(books
       .map(book => book.genres)

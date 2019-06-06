@@ -15,11 +15,13 @@ const LoginForm = (props) => {
       const result = await props.login({
         variables: { username, password }
       })
-
       const token = result.data.login.value
-
       props.setToken(token)
       localStorage.setItem('library-user-token', token)
+      await props.login({
+        variables: { username, password }
+      })
+      props.setToken(token)
       props.setPage('authors')
     } catch(error){
       console.log(error.message);
