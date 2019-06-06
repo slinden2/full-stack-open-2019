@@ -12,6 +12,7 @@ const Books = (props) => {
   }
 
   const books = props.bookResult.data.allBooks
+  const favoriteGenre = props.loggedUser.favoriteGenre
 
   const getGenres = () => {
     return [...new Set(books
@@ -50,7 +51,7 @@ const Books = (props) => {
         {getGenres().map(genre => 
           <button key={genre} onClick={() => setFilter(genre)}>{genre}</button>
         )}
-        <button onClick={() => setFilter(null)}>all genres</button>
+        <button onClick={() => setFilter(favoriteGenre)}>favorites</button>
         <button onClick={() => setFilter(null)}>all genres</button>
       </div>
     </div>

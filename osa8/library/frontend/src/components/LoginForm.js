@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 
 const LoginForm = (props) => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
   if (!props.show) {
     return null
   }
-
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
 
   const loginUser = async (event) => {
     event.preventDefault()

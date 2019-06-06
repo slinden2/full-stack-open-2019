@@ -40,7 +40,10 @@ const CREATE_BOOK = gql`
       genres: $genres
     ) {
       title
-      author
+      author {
+        name
+        born
+      }
       published
       genres
       id
@@ -84,7 +87,6 @@ const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
   const [loggedUser, setLoggedUser] = useState(null)
-  const loggedUserResult = useQuery(LOGGED_USER)
   const authorResult = useQuery(ALL_AUTHORS)
   const bookResult = useQuery(ALL_BOOKS)
   const client = useApolloClient()
@@ -152,7 +154,7 @@ const App = () => {
         show={page === 'books'}
         bookResult={bookResult}
         token={token}
-        loggedUserResult={loggedUserResult}
+        loggedUser={loggedUser}
       />
 
       <NewBook
