@@ -7,11 +7,13 @@ const Books = (props) => {
     return null
   }
 
-  if (props.result.loading) {
+  if (props.bookResult.loading) {
     return <div>loading...</div>
   }
 
-  const books = props.result.data.allBooks
+  const books = props.bookResult.data.allBooks
+
+  console.log(props.loggedUserResult.data.me);
 
   const getGenres = () => {
     return [...new Set(books
@@ -50,6 +52,7 @@ const Books = (props) => {
         {getGenres().map(genre => 
           <button key={genre} onClick={() => setFilter(genre)}>{genre}</button>
         )}
+        <button onClick={() => setFilter(null)}>all genres</button>
         <button onClick={() => setFilter(null)}>all genres</button>
       </div>
     </div>

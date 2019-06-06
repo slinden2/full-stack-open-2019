@@ -100,7 +100,6 @@ const resolvers = {
       return authors
     },
     me: async (root, args, context) => {
-      console.log(context.currentUser);
       return context.currentUser
     }
   },
