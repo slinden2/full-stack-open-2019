@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useQuery } from 'react-apollo-hooks'
 
-const Books = (props) => {
-  const [filter, setFilter] = useState(null)
+const Recommend = props => {
   const bookResult = useQuery(props.books)
 
   if (!props.show) {
@@ -12,20 +11,14 @@ const Books = (props) => {
   if (bookResult.loading) {
     return <div>loading...</div>
   }
-
+  
   const books = bookResult.data.allBooks
-
-  const getGenres = () => {
-    return [...new Set(books
-      .map(book => book.genres)
-      .flat())
-    ]
-  }
+  console.log(books);
 
   return (
     <div>
-      <h2>books</h2>
-      {filter && <div>in genre {filter}</div>}
+      <h2>recommended books</h2>
+
       <table>
         <tbody>
           <tr>
@@ -38,7 +31,7 @@ const Books = (props) => {
             </th>
           </tr>
           {books
-            .filter(book => book.genres.includes(filter) || !filter)
+            .filter(book => book.genres.includes(props.user.favoriteGenre))
             .map(a =>
               <tr key={a.title}>
                 <td>{a.title}</td>
@@ -48,14 +41,8 @@ const Books = (props) => {
               )}
         </tbody>
       </table>
-      <div>
-        {getGenres().map(genre => 
-          <button key={genre} onClick={() => setFilter(genre)}>{genre}</button>
-        )}
-        <button onClick={() => setFilter(null)}>all genres</button>
-      </div>
     </div>
   )
 }
 
-export default Books
+export default Recommend

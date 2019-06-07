@@ -5,6 +5,7 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
+import Recommend from './components/Recommend'
 
 const ALL_AUTHORS = gql`
   {
@@ -17,16 +18,31 @@ const ALL_AUTHORS = gql`
   }
 `
 
+// const ALL_BOOKS = gql`
+//   {
+//     allBooks {
+//       title
+//       author {
+//         name
+//         born
+//       }
+//       published
+//       genres
+//     }
+//   }
+// `
+
 const ALL_BOOKS = gql`
-  {
-    allBooks {
+  query allBooks($author: String, $genre: String) {
+    allBooks(author: $author, genre: $genre) {
       title
       author {
         name
         born
       }
-      published
       genres
+      published
+      id
     }
   }
 `
@@ -88,7 +104,6 @@ const App = () => {
   const [token, setToken] = useState(null)
   const [loggedUser, setLoggedUser] = useState(null)
   const authorResult = useQuery(ALL_AUTHORS)
-  const bookResult = useQuery(ALL_BOOKS)
   const client = useApolloClient()
 
   useEffect(() => {
@@ -137,6 +152,7 @@ const App = () => {
         {token 
         ? <>
             <button onClick={() => setPage('add')}>add book</button>
+            <button onClick={() => setPage('recommend')}>recommendations</button>
             <button onClick={logout}>logout</button>
           </>
         : <>
@@ -152,7 +168,7 @@ const App = () => {
 
       <Books
         show={page === 'books'}
-        bookResult={bookResult}
+        books={ALL_BOOKS}
         token={token}
         loggedUser={loggedUser}
       />
@@ -167,6 +183,12 @@ const App = () => {
         login={login}
         setToken={(token) => setToken(token)}
         setPage={setPage}
+      />
+
+      <Recommend
+        show={page === 'recommend'}
+        user={loggedUser}
+        books={ALL_BOOKS}
       />
 
     </div>
