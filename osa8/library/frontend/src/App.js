@@ -18,20 +18,6 @@ const ALL_AUTHORS = gql`
   }
 `
 
-// const ALL_BOOKS = gql`
-//   {
-//     allBooks {
-//       title
-//       author {
-//         name
-//         born
-//       }
-//       published
-//       genres
-//     }
-//   }
-// `
-
 const ALL_BOOKS = gql`
   query allBooks($author: String, $genre: String) {
     allBooks(author: $author, genre: $genre) {
@@ -44,6 +30,12 @@ const ALL_BOOKS = gql`
       published
       id
     }
+  }
+`
+
+const ALL_GENRES = gql`
+  {
+    allGenres
   }
 `
 
@@ -102,7 +94,6 @@ const LOGGED_USER = gql`
 const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
-  const [loggedUser, setLoggedUser] = useState(null)
   const authorResult = useQuery(ALL_AUTHORS)
   const client = useApolloClient()
 
@@ -110,19 +101,9 @@ const App = () => {
     setToken(localStorage.getItem('library-user-token'))
   }, [])
 
-  useEffect(() => {
-    (async () => {
-      const { data } = await client.query({
-        query: LOGGED_USER
-      })
-      console.log("useEffectin user", data.me);
-      setLoggedUser(data.me)
-    })()
-  }, [token])
-
   const addBook = useMutation(CREATE_BOOK, {
     refetchQueries: [
-      { query: ALL_BOOKS },
+      { query: ALL_BOOKS, fetchPolicy: 'no-cache' },
       { query: ALL_AUTHORS },
     ]
   })
@@ -134,13 +115,9 @@ const App = () => {
   const login = useMutation(LOGIN)
 
   const logout = () => {
-    console.log("logataan ulos");
     setToken(null)
-    console.log("token nullattu");
     localStorage.removeItem('library-user-token')
-    console.log("localStorage tyhjennetty");
     client.resetStore()
-    console.log("välimuisti resetoitu");
     setPage('authors')
   }
 
@@ -164,13 +141,13 @@ const App = () => {
         show={page === 'authors'}
         result={authorResult}
         editAuthor={editAuthor}
+        token={token}
       />
 
       <Books
         show={page === 'books'}
-        books={ALL_BOOKS}
-        token={token}
-        loggedUser={loggedUser}
+        ALL_BOOKS={ALL_BOOKS}
+        ALL_GENRES={ALL_GENRES}
       />
 
       <NewBook
@@ -187,8 +164,8 @@ const App = () => {
 
       <Recommend
         show={page === 'recommend'}
-        user={loggedUser}
-        books={ALL_BOOKS}
+        ALL_BOOKS={ALL_BOOKS}
+        LOGGED_USER={LOGGED_USER}
       />
 
     </div>

@@ -35,10 +35,11 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
+      {props.token &&
       <EditAuthor
         editAuthor={props.editAuthor}
         authors={authors}
-      />
+      />}
     </div>
   )
 }

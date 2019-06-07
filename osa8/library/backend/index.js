@@ -52,6 +52,7 @@ const typeDefs = gql`
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
     me: User
+    allGenres: [String!]!
   }
 
   type Mutation {
@@ -101,7 +102,11 @@ const resolvers = {
     },
     me: async (root, args, context) => {
       return context.currentUser
-    }
+    },
+    allGenres: async () => {
+      const genres = await Book.distinct('genres')
+      return genres
+    },
   },
   Author: {
     bookCount: async root => {

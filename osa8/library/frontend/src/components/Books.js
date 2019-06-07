@@ -1,25 +1,37 @@
-import React, { useState } from 'react'
-import { useQuery } from 'react-apollo-hooks'
+import React, { useState, useEffect } from 'react'
+import { useApolloClient } from 'react-apollo-hooks'
 
 const Books = (props) => {
   const [filter, setFilter] = useState(null)
-  const bookResult = useQuery(props.books)
+  const [genres, setGenres] = useState([])
+  const [booksToShow, setBooksToShow] = useState([])
+
+  const client = useApolloClient()
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await client.query({ 
+        query: props.ALL_BOOKS,
+        variables: { genre: filter },
+        fetchPolicy: 'no-cache'
+      })
+      setBooksToShow(data.allBooks)
+    })()
+  }, [filter, props.show])
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await client.query({ query: props.ALL_GENRES, fetchPolicy: 'no-cache' })
+      setGenres(data.allGenres)
+    })()
+  }, [props.show])
 
   if (!props.show) {
     return null
   }
 
-  if (bookResult.loading) {
+  if (!booksToShow) {
     return <div>loading...</div>
-  }
-
-  const books = bookResult.data.allBooks
-
-  const getGenres = () => {
-    return [...new Set(books
-      .map(book => book.genres)
-      .flat())
-    ]
   }
 
   return (
@@ -37,8 +49,7 @@ const Books = (props) => {
               published
             </th>
           </tr>
-          {books
-            .filter(book => book.genres.includes(filter) || !filter)
+          {booksToShow
             .map(a =>
               <tr key={a.title}>
                 <td>{a.title}</td>
@@ -49,7 +60,7 @@ const Books = (props) => {
         </tbody>
       </table>
       <div>
-        {getGenres().map(genre => 
+        {genres.map(genre => 
           <button key={genre} onClick={() => setFilter(genre)}>{genre}</button>
         )}
         <button onClick={() => setFilter(null)}>all genres</button>
