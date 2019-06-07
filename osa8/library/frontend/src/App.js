@@ -102,10 +102,16 @@ const App = () => {
   }, [])
 
   const addBook = useMutation(CREATE_BOOK, {
-    refetchQueries: [
-      { query: ALL_BOOKS, fetchPolicy: 'no-cache' },
-      { query: ALL_AUTHORS },
-    ]
+    refetchQueries: () => {
+      console.log("refetchQueries")
+      return [{
+        query: ALL_BOOKS,
+        variables: { genre: null }
+      },
+      {
+        query: ALL_AUTHORS
+      }]
+   }
   })
 
   const editAuthor = useMutation(UPDATE_AUTHOR, {

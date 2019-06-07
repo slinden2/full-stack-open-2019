@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useApolloClient } from 'react-apollo-hooks'
 
 const Books = (props) => {
-  const [filter, setFilter] = useState(null)
+  const [filter, setFilter] = useState('')
   const [genres, setGenres] = useState([])
   const [booksToShow, setBooksToShow] = useState([])
 
@@ -10,21 +10,22 @@ const Books = (props) => {
 
   useEffect(() => {
     (async () => {
+      const { data } = await client.query({
+        query: props.ALL_GENRES,
+      })
+      setGenres(data.allGenres)
+    })()
+  }, [props.show])
+
+  useEffect(() => {
+    (async () => {
       const { data } = await client.query({ 
         query: props.ALL_BOOKS,
         variables: { genre: filter },
-        fetchPolicy: 'no-cache'
       })
       setBooksToShow(data.allBooks)
     })()
   }, [filter, props.show])
-
-  useEffect(() => {
-    (async () => {
-      const { data } = await client.query({ query: props.ALL_GENRES, fetchPolicy: 'no-cache' })
-      setGenres(data.allGenres)
-    })()
-  }, [props.show])
 
   if (!props.show) {
     return null
