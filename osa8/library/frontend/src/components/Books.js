@@ -25,7 +25,7 @@ const Books = (props) => {
       })
       setBooksToShow(data.allBooks)
     })()
-  }, [filter, props.show])
+  }, [filter, props.show, booksToShow])
 
   if (!props.show) {
     return null
