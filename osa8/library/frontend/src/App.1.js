@@ -99,10 +99,8 @@ const BOOK_ADDED = gql`
       published
       author {
         name
-        born
       }
       genres
-      id
     }
   }
 `
@@ -117,22 +115,16 @@ const App = () => {
     setToken(localStorage.getItem('library-user-token'))
   }, [])
 
-  const includedIn = (set, object) => {
-    set.map(b => b.id).includes(object.id)
-  }
-
   const addBook = useMutation(CREATE_BOOK, {
-    update: (store, response) => {
-      const dataInStore = store.readQuery({ query: ALL_BOOKS, variables: { genre: "" } })
-      const addedBook = response.data.addBook
-
-      if (!includedIn(dataInStore.allBooks, addedBook)) {
-        dataInStore.allBooks.push(addedBook)
-        client.writeQuery({
-          query: ALL_BOOKS,
-          data: dataInStore
-        })
-      }
+    refetchQueries: () => {
+      console.log("refetchQueries")
+      return [{
+        query: ALL_BOOKS,
+        variables: { genre: null }
+      },
+      {
+        query: ALL_AUTHORS
+      }]
    }
   })
 
@@ -198,18 +190,9 @@ const App = () => {
 
       <Subscription
         subscription={BOOK_ADDED}
-        onSubscriptionData={({ subscriptionData }) => {
-          const addedBook = subscriptionData.data.bookAdded
- 
-          const dataInStore = client.readQuery({ query: ALL_BOOKS, variables: { genre: "" }  })
-          if (!includedIn(dataInStore.allBooks, addedBook)) {
-            dataInStore.allBooks.push(addedBook)
-            client.writeQuery({
-              query: ALL_BOOKS,
-              data: dataInStore
-            })
-          }
-        }}
+        onSubscriptionData={({ subscriptionData }) => 
+          window.alert(`${subscriptionData.data.bookAdded.title} added`)
+        }
       >
         {() => null}
       </Subscription>
