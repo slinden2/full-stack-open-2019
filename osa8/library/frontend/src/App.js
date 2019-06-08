@@ -6,6 +6,7 @@ import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
 import Recommend from './components/Recommend'
+import { Subscription } from 'react-apollo';
 
 const ALL_AUTHORS = gql`
   {
@@ -87,6 +88,19 @@ const LOGGED_USER = gql`
     me {
       username
       favoriteGenre
+    }
+  }
+`
+
+const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      title
+      published
+      author {
+        name
+      }
+      genres
     }
   }
 `
@@ -173,6 +187,15 @@ const App = () => {
         ALL_BOOKS={ALL_BOOKS}
         LOGGED_USER={LOGGED_USER}
       />
+
+      <Subscription
+        subscription={BOOK_ADDED}
+        onSubscriptionData={({ subscriptionData }) => 
+          window.alert(`${subscriptionData.data.bookAdded.title} added`)
+        }
+      >
+        {() => null}
+      </Subscription>
 
     </div>
   )
